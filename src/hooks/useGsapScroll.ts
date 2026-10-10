@@ -149,23 +149,25 @@ export const useGsapScroll = () => {
         });
       }
 
-      // --- Fresh Picks Products Reveal (Scoped to #fresh-picks) ---
-      const freshPicksCards = gsap.utils.toArray<HTMLElement>('#fresh-picks .gsap-product-card');
-      if (freshPicksCards.length > 0) {
-        gsap.from(freshPicksCards, {
-          opacity: 0,
-          y: 35,
-          scale: 0.97,
-          duration: 0.65,
-          stagger: 0.07,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: '#fresh-picks',
-            start: 'top 85%',
-            toggleActions: 'play none none reverse',
-          },
-        });
-      }
+      // --- Product Sections Reveal (Fresh Picks, Bakery & Dairy, Most Selling, Pantry Superfoods) ---
+      ['#fresh-picks', '#bakery-dairy', '#most-selling', '#pantry-superfoods'].forEach((secId) => {
+        const sectionCards = gsap.utils.toArray<HTMLElement>(`${secId} .gsap-product-card`);
+        if (sectionCards.length > 0) {
+          gsap.from(sectionCards, {
+            opacity: 0,
+            y: 35,
+            scale: 0.97,
+            duration: 0.65,
+            stagger: 0.07,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: secId,
+              start: 'top 85%',
+              toggleActions: 'play none none reverse',
+            },
+          });
+        }
+      });
 
       // --- App Promotion Banner Reveal ---
       const appCards = gsap.utils.toArray<HTMLElement>('#app-section .gsap-app-card');
@@ -179,24 +181,6 @@ export const useGsapScroll = () => {
           clearProps: 'opacity,transform',
           scrollTrigger: {
             trigger: '#app-section',
-            start: 'top 85%',
-            toggleActions: 'play none none reverse',
-          },
-        });
-      }
-
-      // --- Most Selling Products Reveal (Scoped to #most-selling) ---
-      const mostSellingCards = gsap.utils.toArray<HTMLElement>('#most-selling .gsap-product-card');
-      if (mostSellingCards.length > 0) {
-        gsap.from(mostSellingCards, {
-          opacity: 0,
-          y: 35,
-          scale: 0.97,
-          duration: 0.65,
-          stagger: 0.07,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: '#most-selling',
             start: 'top 85%',
             toggleActions: 'play none none reverse',
           },

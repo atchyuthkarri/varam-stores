@@ -5,11 +5,13 @@ import { AnnouncementBar } from './components/AnnouncementBar';
 import { Header } from './components/Header';
 import { HeroSection } from './components/HeroSection';
 import { CategorySection } from './components/CategorySection';
-import { FarmFreshBanner } from './components/FarmFreshBanner';
 import { PromoCardsRow } from './components/PromoCardsRow';
 import { ProductSection } from './components/ProductSection';
-import { AppPromotion } from './components/AppPromotion';
+import { BakeryDairySection } from './components/BakeryDairySection';
+import { FarmFreshBanner } from './components/FarmFreshBanner';
 import { MostSellingSection } from './components/MostSellingSection';
+import { PantrySuperfoodsSection } from './components/PantrySuperfoodsSection';
+import { AppPromotion } from './components/AppPromotion';
 import { TrustBar } from './components/TrustBar';
 import { Footer } from './components/Footer';
 import { CartDrawer } from './components/CartDrawer';
@@ -55,7 +57,7 @@ export const AppContent: React.FC = () => {
         isWishlistFilterActive={isWishlistFilterActive}
       />
 
-      {/* Main Landing Page Content matching reference layout */}
+      {/* Main Landing Page Content */}
       <main className="flex-1">
         {/* 3. Hero Section */}
         <HeroSection />
@@ -66,30 +68,46 @@ export const AppContent: React.FC = () => {
           onSelectCategory={(cat) => setSelectedCategory(cat)}
         />
 
-        {/* 5. Farm Fresh Fruits & Vegetables Delivered Daily Banner */}
-        <FarmFreshBanner />
-
-        {/* 6. 3 Promo Cards Row (Green 20% OFF, Rose Pink Free Delivery, Butter Yellow Fresh Groceries) */}
+        {/* 5. 3 Promo Cards Row */}
         <PromoCardsRow />
 
-        {/* 7. Today's Fresh Picks (5 Products) */}
+        {/* ========================================================================= */}
+        {/* FIRST SET: 2 PRODUCT SECTIONS */}
+        {/* ========================================================================= */}
+        {/* Product Section 1: Today's Fresh Picks */}
         <ProductSection
           onQuickView={handleSelectProduct}
           isWishlistFilterActive={isWishlistFilterActive}
           onClearWishlistFilter={() => setIsWishlistFilterActive(false)}
         />
 
-        {/* 8. Get the Varam stores App Banner */}
-        <AppPromotion />
+        {/* Product Section 2: Morning Bakery & Farm Dairy */}
+        <BakeryDairySection onQuickView={handleSelectProduct} />
 
-        {/* 9. Most Selling Products (5 Products) */}
+        {/* ========================================================================= */}
+        {/* BANNER 1: Farm Fresh Fruits & Vegetables Banner */}
+        {/* ========================================================================= */}
+        <FarmFreshBanner />
+
+        {/* ========================================================================= */}
+        {/* SECOND SET: 2 PRODUCT SECTIONS */}
+        {/* ========================================================================= */}
+        {/* Product Section 3: Most Selling Products */}
         <MostSellingSection onQuickView={handleSelectProduct} />
 
-        {/* 10. 4 Brand Trust Features Bar */}
+        {/* Product Section 4: Pantry Staples & Superfoods */}
+        <PantrySuperfoodsSection onQuickView={handleSelectProduct} />
+
+        {/* ========================================================================= */}
+        {/* BANNER 2: Get the Varam stores App Banner */}
+        {/* ========================================================================= */}
+        <AppPromotion />
+
+        {/* 4 Brand Trust Features Bar */}
         <TrustBar />
       </main>
 
-      {/* 11. Footer with Newsletter Subscription */}
+      {/* Footer with Newsletter Subscription */}
       <Footer />
 
       {/* Interactive Cart Drawer, Location Modal, Quick View, and Checkout */}
