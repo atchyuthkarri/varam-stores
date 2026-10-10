@@ -18,43 +18,81 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
       <button
         type="button"
         onClick={() => onSelect(category.id)}
-        className={`group relative w-full h-full min-h-[220px] sm:min-h-[240px] rounded-2xl sm:rounded-3xl overflow-hidden flex flex-col justify-between p-3.5 sm:p-4 text-left transition-all duration-300 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#123F32] ${
+        className={`group relative w-full h-full min-h-[260px] sm:min-h-[290px] rounded-[26px] sm:rounded-[30px] p-4 sm:p-5 flex flex-col justify-between text-left transition-all duration-400 ease-out cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#123F32] overflow-hidden bg-gradient-to-b ${
+          category.cardBg || 'from-[#F8F9F6] to-[#EFF2ED]'
+        } border ${
           isSelected
-            ? 'ring-3 ring-[#D6F36A] shadow-xl scale-[1.02]'
-            : 'hover:-translate-y-1.5 hover:shadow-xl shadow-sm hover:shadow-emerald-950/20'
+            ? 'border-[#123F32] shadow-xl ring-2 ring-[#123F32]/20 scale-[1.02] bg-white'
+            : 'border-black/[0.06] hover:border-black/15 hover:shadow-xl hover:shadow-black/8 hover:-translate-y-2'
         }`}
       >
-        {/* 1. Full-Bleed High-Res Photographic Image Background */}
-        <img
-          src={category.image}
-          alt={category.name}
-          className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-110"
-          loading="lazy"
-        />
+        {/* Subtle Ambient Radial Highlight */}
+        <div className="absolute -top-12 -right-12 w-32 h-32 rounded-full bg-white/60 blur-2xl pointer-events-none" />
 
-        {/* 2. Rich Culinary Gradient Scrim Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/10 group-hover:from-black/95 group-hover:via-black/50 transition-colors duration-300 pointer-events-none" />
+        {/* Top Bar: Badge & Action Arrow */}
+        <div className="relative z-10 w-full flex items-center justify-between gap-2">
+          {category.badge ? (
+            <span
+              className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-bold tracking-wide shadow-2xs backdrop-blur-md bg-white/80 border border-white/60"
+              style={{ color: category.accentColor || '#123F32' }}
+            >
+              {category.badge}
+            </span>
+          ) : (
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-bold text-[#556059] bg-white/80 border border-white/60">
+              {category.itemCount}
+            </span>
+          )}
 
-        {/* 3. Subtle Inner Border Glow */}
-        <div className="absolute inset-0 rounded-2xl sm:rounded-3xl border border-white/20 group-hover:border-[#D6F36A]/60 transition-colors duration-300 pointer-events-none" />
-
-        {/* 4. Top Row: Frosted Glass Item Count Badge & Floating Diagonal Arrow */}
-        <div className="relative z-10 w-full flex items-center justify-between gap-1.5">
-          <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-black/40 backdrop-blur-md border border-white/20 text-[10px] sm:text-[11px] font-bold text-white tracking-wide shadow-2xs group-hover:border-[#D6F36A]/60 group-hover:text-[#D6F36A] transition-colors">
-            {category.itemCount}
-          </span>
-
-          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/20 backdrop-blur-md border border-white/25 flex items-center justify-center text-white group-hover:bg-[#D6F36A] group-hover:text-[#123F32] group-hover:border-[#D6F36A] group-hover:rotate-45 transition-all duration-300 shadow-2xs">
+          <div
+            className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-all duration-300 shadow-2xs ${
+              isSelected
+                ? 'bg-[#123F32] text-white rotate-45'
+                : 'bg-white/90 text-[#18231E] border border-black/5 group-hover:bg-[#123F32] group-hover:text-white group-hover:rotate-45 group-hover:border-transparent'
+            }`}
+          >
             <ArrowUpRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[2.5]" />
           </div>
         </div>
 
-        {/* 5. Bottom Row: Category Title & Dynamic Lime Underline Accent */}
-        <div className="relative z-10 w-full mt-auto pt-4">
-          <h3 className="font-serif-heading font-bold text-sm sm:text-base text-white leading-tight drop-shadow-sm group-hover:text-[#D6F36A] transition-colors">
-            {category.name}
-          </h3>
-          <div className="h-0.5 w-6 bg-[#D6F36A] rounded-full mt-2 group-hover:w-12 transition-all duration-300 opacity-80" />
+        {/* Center: Produce Hero Stage */}
+        <div className="relative z-10 my-auto py-2 flex items-center justify-center">
+          {/* Soft Organic White Stage Disk */}
+          <div className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-full bg-white/85 shadow-xs border border-white flex items-center justify-center p-2 group-hover:scale-105 group-hover:shadow-md transition-all duration-400 ease-out">
+            <img
+              src={category.image}
+              alt={category.name}
+              className="w-full h-full object-cover rounded-full group-hover:scale-110 group-hover:-translate-y-1 transition-transform duration-500 ease-out drop-shadow-sm"
+              loading="lazy"
+            />
+          </div>
+        </div>
+
+        {/* Bottom: Title, Tagline & Item Count */}
+        <div className="relative z-10 w-full pt-1">
+          <div className="flex items-center justify-between gap-1 mb-0.5">
+            <h3 className="font-serif-heading font-bold text-[15px] sm:text-[17px] text-[#18231E] group-hover:text-[#123F32] transition-colors leading-tight">
+              {category.name}
+            </h3>
+          </div>
+          
+          <div className="flex items-center justify-between gap-2 mt-1">
+            <span className="text-[11px] sm:text-xs text-[#556059] font-medium truncate">
+              {category.tagline || category.itemCount}
+            </span>
+            <span className="text-[10px] sm:text-[11px] font-bold text-[#123F32] opacity-80 shrink-0">
+              {category.itemCount}
+            </span>
+          </div>
+
+          {/* Interactive Progress / Accent Line on Hover */}
+          <div
+            className={`h-0.5 rounded-full mt-2.5 transition-all duration-300 ${
+              isSelected
+                ? 'w-full bg-[#123F32]'
+                : 'w-6 bg-black/10 group-hover:w-full group-hover:bg-[#123F32]'
+            }`}
+          />
         </div>
       </button>
     </div>

@@ -27,6 +27,10 @@ export interface Category {
   itemCount: string;
   image: string;
   accentBg: string;
+  tagline?: string;
+  badge?: string;
+  accentColor?: string;
+  cardBg?: string;
 }
 
 export interface CartItem {
