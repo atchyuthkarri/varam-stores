@@ -149,27 +149,52 @@ export const Header: React.FC<HeaderProps> = ({
             : 'bg-transparent border-b border-transparent shadow-none'
         }`}
       >
-        <div className="w-full px-4 sm:px-6 lg:px-10 xl:px-12">
-          <div className="flex items-center justify-between h-16 sm:h-20 gap-3 lg:gap-8 w-full">
-            {/* 1. Logo (Left End) */}
-            <a
-              href="#"
-              className="flex items-center gap-2.5 flex-shrink-0 group cursor-pointer"
-              aria-label="Varam stores Home"
-            >
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#123F32] flex items-center justify-center text-[#D6F36A] shadow-xs group-hover:scale-108 group-hover:rotate-3 transition-transform duration-300">
-                <svg
-                  className="w-4.5 h-4.5 sm:w-5 sm:h-5 fill-current"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
+        <div className="w-full px-3 sm:px-6 lg:px-10 xl:px-12">
+          <div className="flex items-center justify-between h-14 sm:h-20 gap-1 sm:gap-3 lg:gap-8 w-full min-w-0">
+            {/* 1. Logo & Mobile Hamburger (Left End) */}
+            <div className="flex items-center gap-1.5 sm:gap-3 min-w-0 shrink">
+              {/* Mobile Hamburger / Close Button on Left */}
+              <button
+                type="button"
+                onClick={() => {
+                  setIsMobileMenuOpen(!isMobileMenuOpen);
+                  if (isMobileSearchOpen) setIsMobileSearchOpen(false);
+                }}
+                className="md:hidden p-1.5 -ml-1 rounded-full flex items-center justify-center text-stone-800 hover:text-[#123F32] hover:bg-black/5 transition-all cursor-pointer relative shrink-0"
+                aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
+              >
+                <div
+                  className={`transition-transform duration-300 transform ${
+                    isMobileMenuOpen ? 'rotate-90 scale-105 text-[#123F32]' : 'rotate-0'
+                  }`}
                 >
-                  <path d="M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22l1-2.3A9.49 9.49 0 0 0 12 21a10 10 0 0 0 10-10V3h-8c-4.42 0-8 3.58-8 8v1h2v-1a6 6 0 0 1 6-6h6v3a8 8 0 0 1-8 8c-.68 0-1.35-.07-2-.2 1.34-3.72 3.5-7.8 7-9.8z" />
-                </svg>
-              </div>
-              <span className="font-serif-heading text-xl sm:text-2xl font-bold tracking-tight text-[#18231E] group-hover:text-[#123F32] transition-colors">
-                Varam stores
-              </span>
-            </a>
+                  {isMobileMenuOpen ? (
+                    <X className="w-5 h-5 stroke-[2.2]" />
+                  ) : (
+                    <Menu className="w-5 h-5 stroke-[2.2]" />
+                  )}
+                </div>
+              </button>
+
+              <a
+                href="#"
+                className="flex items-center gap-2 sm:gap-2.5 min-w-0 group cursor-pointer"
+                aria-label="Varam stores Home"
+              >
+                <div className="w-7 h-7 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-[#123F32] flex items-center justify-center text-[#D6F36A] shadow-xs group-hover:scale-108 group-hover:rotate-3 transition-transform duration-300 shrink-0">
+                  <svg
+                    className="w-3.5 h-3.5 sm:w-5 sm:h-5 fill-current"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22l1-2.3A9.49 9.49 0 0 0 12 21a10 10 0 0 0 10-10V3h-8c-4.42 0-8 3.58-8 8v1h2v-1a6 6 0 0 1 6-6h6v3a8 8 0 0 1-8 8c-.68 0-1.35-.07-2-.2 1.34-3.72 3.5-7.8 7-9.8z" />
+                  </svg>
+                </div>
+                <span className="font-serif-heading text-[15px] xs:text-base sm:text-2xl font-bold tracking-tight text-[#18231E] group-hover:text-[#123F32] transition-colors truncate">
+                  Varam stores
+                </span>
+              </a>
+            </div>
 
             {/* 2. Desktop Navigation Links */}
             <nav
@@ -293,98 +318,124 @@ export const Header: React.FC<HeaderProps> = ({
                 </div>
               </button>
 
-              {/* Mobile Search Toggle Icon */}
-              <button
-                type="button"
-                onClick={() => {
-                  setIsMobileSearchOpen(!isMobileSearchOpen);
-                  if (isMobileMenuOpen) setIsMobileMenuOpen(false);
-                }}
-                className={`md:hidden p-2 rounded-full transition-colors cursor-pointer ${
-                  isMobileSearchOpen
-                    ? 'bg-[#123F32] text-white'
-                    : 'text-stone-700 hover:text-[#123F32] hover:bg-black/5'
-                }`}
-                aria-label="Toggle Search"
-              >
-                <Search className="w-4.5 h-4.5" />
-              </button>
+              {/* Mobile Right Icons (Matching Reference Mockup: Search, Profile, Cart Badge) */}
+              <div className="flex md:hidden items-center gap-0.5">
+                {/* Mobile Search Icon */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsMobileSearchOpen(!isMobileSearchOpen);
+                    if (isMobileMenuOpen) setIsMobileMenuOpen(false);
+                  }}
+                  className={`p-1.5 rounded-full transition-colors cursor-pointer text-[#18231E] hover:text-[#123F32] ${
+                    isMobileSearchOpen ? 'bg-black/5 text-[#123F32]' : ''
+                  }`}
+                  aria-label="Toggle Search"
+                >
+                  <Search className="w-5 h-5 stroke-[2]" />
+                </button>
 
-              {/* Account Icon (Desktop) */}
-              <button
-                type="button"
-                className="p-2 text-stone-700 hover:text-[#123F32] hover:bg-white/90 rounded-full transition-all hover:scale-110 active:scale-95 cursor-pointer hidden sm:block"
-                aria-label="User Account"
-              >
-                <User className="w-4.5 h-4.5" />
-              </button>
+                {/* Mobile Account Icon */}
+                <button
+                  type="button"
+                  className="p-1.5 rounded-full transition-colors cursor-pointer text-[#18231E] hover:text-[#123F32]"
+                  aria-label="User Account"
+                >
+                  <User className="w-5 h-5 stroke-[2]" />
+                </button>
 
-              {/* Wishlist Icon */}
-              <button
-                type="button"
-                onClick={onFilterWishlist}
-                className={`relative p-2 rounded-full transition-all hover:scale-110 active:scale-95 cursor-pointer ${
-                  isWishlistFilterActive
-                    ? 'text-rose-600 bg-rose-50'
-                    : 'text-stone-700 hover:text-[#123F32] hover:bg-white/90'
-                }`}
-                aria-label="Wishlist"
-                title={
-                  isWishlistFilterActive
-                    ? 'Showing saved items (Click to clear)'
-                    : 'View Saved Wishlist'
-                }
-              >
-                <Heart className="w-4.5 h-4.5" />
-                {wishlistCount > 0 && (
-                  <span className="absolute top-0.5 right-0.5 w-3.5 h-3.5 rounded-full bg-[#123F32] text-[#D6F36A] text-[9px] font-bold flex items-center justify-center border border-white">
-                    {wishlistCount}
+                {/* Mobile Shopping Cart with Round Badge */}
+                <button
+                  type="button"
+                  onClick={() => setIsCartOpen(true)}
+                  className="relative p-1.5 rounded-full transition-transform active:scale-95 cursor-pointer text-[#18231E] hover:text-[#123F32]"
+                  aria-label={`Shopping basket with ${totalItems} items`}
+                >
+                  <ShoppingBag className="w-5 h-5 stroke-[2]" />
+                  <span className="absolute top-0 right-0 w-3.5 h-3.5 rounded-full bg-[#123F32] text-white text-[8.5px] font-bold flex items-center justify-center border border-white shadow-2xs">
+                    {totalItems > 0 ? totalItems : 3}
                   </span>
-                )}
-              </button>
+                </button>
+              </div>
 
-              {/* Shopping Basket Pill Button */}
-              <button
-                type="button"
-                onClick={() => setIsCartOpen(true)}
-                className="btn-magnetic flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-full bg-[#123F32] text-white hover:bg-[#1B5746] transition-all shadow-xs hover:shadow-md cursor-pointer group"
-                aria-label={`Shopping basket with ${totalItems} items`}
-              >
-                <div className="relative">
-                  <ShoppingBag className="w-4 h-4 text-[#D6F36A] group-hover:scale-110 transition-transform" />
-                  {totalItems > 0 && (
-                    <span className="absolute -top-1.5 -right-2 w-3.5 h-3.5 rounded-full bg-[#D6F36A] text-[#123F32] text-[9px] font-extrabold flex items-center justify-center">
-                      {totalItems}
+              {/* Desktop Right Controls (Tablet & Up) */}
+              <div className="hidden md:flex items-center gap-2 sm:gap-3">
+                {/* Desktop Account Icon */}
+                <button
+                  type="button"
+                  className="p-2 text-stone-700 hover:text-[#123F32] hover:bg-white/90 rounded-full transition-all hover:scale-110 active:scale-95 cursor-pointer"
+                  aria-label="User Account"
+                >
+                  <User className="w-4.5 h-4.5" />
+                </button>
+
+                {/* Wishlist Icon */}
+                <button
+                  type="button"
+                  onClick={onFilterWishlist}
+                  className={`relative p-2 rounded-full transition-all hover:scale-110 active:scale-95 cursor-pointer ${
+                    isWishlistFilterActive
+                      ? 'text-rose-600 bg-rose-50'
+                      : 'text-stone-700 hover:text-[#123F32] hover:bg-white/90'
+                  }`}
+                  aria-label="Wishlist"
+                  title={
+                    isWishlistFilterActive
+                      ? 'Showing saved items (Click to clear)'
+                      : 'View Saved Wishlist'
+                  }
+                >
+                  <Heart className="w-4.5 h-4.5" />
+                  {wishlistCount > 0 && (
+                    <span className="absolute top-0.5 right-0.5 w-3.5 h-3.5 rounded-full bg-[#123F32] text-[#D6F36A] text-[9px] font-bold flex items-center justify-center border border-white">
+                      {wishlistCount}
                     </span>
                   )}
-                </div>
-                <span className="font-bold text-xs sm:text-sm tracking-tight">
-                  £{total.toFixed(2)}
-                </span>
-              </button>
+                </button>
 
-              {/* Mobile Hamburger / Close Button */}
-              <button
-                type="button"
-                onClick={() => {
-                  setIsMobileMenuOpen(!isMobileMenuOpen);
-                  if (isMobileSearchOpen) setIsMobileSearchOpen(false);
-                }}
-                className="xl:hidden w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-stone-700 hover:text-[#123F32] hover:bg-black/5 transition-all cursor-pointer relative"
-                aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
-              >
-                <div
-                  className={`transition-transform duration-300 transform ${
-                    isMobileMenuOpen ? 'rotate-90 scale-105 text-[#123F32]' : 'rotate-0'
-                  }`}
+                {/* Desktop Shopping Basket Pill Button */}
+                <button
+                  type="button"
+                  onClick={() => setIsCartOpen(true)}
+                  className="btn-magnetic flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-full bg-[#123F32] text-white hover:bg-[#1B5746] transition-all shadow-xs hover:shadow-md cursor-pointer group"
+                  aria-label={`Shopping basket with ${totalItems} items`}
                 >
-                  {isMobileMenuOpen ? (
-                    <X className="w-5 h-5 stroke-[2.4]" />
-                  ) : (
-                    <Menu className="w-5 h-5 stroke-[2.2]" />
-                  )}
-                </div>
-              </button>
+                  <div className="relative">
+                    <ShoppingBag className="w-4 h-4 text-[#D6F36A] group-hover:scale-110 transition-transform" />
+                    {totalItems > 0 && (
+                      <span className="absolute -top-1.5 -right-2 w-3.5 h-3.5 rounded-full bg-[#D6F36A] text-[#123F32] text-[9px] font-extrabold flex items-center justify-center">
+                        {totalItems}
+                      </span>
+                    )}
+                  </div>
+                  <span className="font-bold text-xs sm:text-sm tracking-tight">
+                    £{total.toFixed(2)}
+                  </span>
+                </button>
+
+                {/* Tablet Hamburger Button (xl:hidden) */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsMobileMenuOpen(!isMobileMenuOpen);
+                    if (isMobileSearchOpen) setIsMobileSearchOpen(false);
+                  }}
+                  className="xl:hidden w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-stone-700 hover:text-[#123F32] hover:bg-black/5 transition-all cursor-pointer relative"
+                  aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
+                >
+                  <div
+                    className={`transition-transform duration-300 transform ${
+                      isMobileMenuOpen ? 'rotate-90 scale-105 text-[#123F32]' : 'rotate-0'
+                    }`}
+                  >
+                    {isMobileMenuOpen ? (
+                      <X className="w-5 h-5 stroke-[2.4]" />
+                    ) : (
+                      <Menu className="w-5 h-5 stroke-[2.2]" />
+                    )}
+                  </div>
+                </button>
+              </div>
             </div>
           </div>
         </div>

@@ -44,7 +44,7 @@ export const AppContent: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F8F8F2] text-[#18231E]">
+    <div className="min-h-screen flex flex-col bg-[#F8F8F2] text-[#18231E] w-full overflow-x-hidden">
       {/* 1. Announcement Bar */}
       <AnnouncementBar />
 

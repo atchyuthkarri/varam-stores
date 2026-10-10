@@ -6,7 +6,6 @@ import {
   Leaf,
   Layers,
   ShieldCheck,
-  Sparkles,
 } from 'lucide-react';
 import { VideoModal } from './VideoModal';
 
@@ -14,142 +13,179 @@ export const HeroSection: React.FC = () => {
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
 
   return (
-    <section className="gsap-hero-section relative w-full overflow-hidden bg-[#FAF6EF]">
+    <>
       {/* ========================================================================= */}
-      {/* DESKTOP BACKGROUND ONLY (lg and above): Panoramic Hero Bag on the Right */}
+      {/* MOBILE HERO (MATCHING EXACT REFERENCE MOCKUP SCREENSHOT)                  */}
       {/* ========================================================================= */}
-      <div className="hidden lg:block absolute inset-0 w-full h-full pointer-events-none z-0">
-        <img
-          src="/hero-banner.jpg?v=6"
-          alt="Varam stores Canvas Grocery Tote filled with fresh vegetables, artisan bread, and produce"
-          className="gsap-hero-bg w-full h-full object-cover object-[82%_center] transform scale-100 will-change-transform"
-        />
-        {/* Subtle gradient vignette to blend into creamy left side */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#FAF6EF] via-[#FAF6EF]/60 via-45% to-transparent pointer-events-none" />
-      </div>
+      <section className="block md:hidden relative w-full bg-[#FAF6EF] overflow-hidden">
+        <div className="relative w-full max-w-[500px] mx-auto select-none">
+          {/* Exact Mobile Hero Artwork */}
+          <img
+            src="/hero-mobile-exact.png"
+            alt="Varam stores Good Food Brighter Days - Fresh Everyday Groceries"
+            className="w-full h-auto block pointer-events-none"
+            width={490}
+            height={816}
+            fetchPriority="high"
+          />
+
+          {/* Interactive Hotspot: "Shop Now →" Button */}
+          <a
+            href="#products"
+            aria-label="Shop Now - View Fresh Groceries"
+            className="absolute top-[51.8%] left-[6.8%] w-[38%] h-[6.5%] rounded-full cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#8EBC45] transition-transform active:scale-95"
+            title="Shop Now"
+          />
+
+          {/* Interactive Hotspot: "▶ Watch Video" Button */}
+          <button
+            type="button"
+            onClick={() => setIsVideoModalOpen(true)}
+            aria-label="Watch Video about Fresh Groceries"
+            className="absolute top-[60.4%] left-[6.8%] w-[44%] h-[6.2%] rounded-full cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#8EBC45] transition-transform active:scale-95"
+            title="Watch Video"
+          />
+
+          {/* Interactive Hotspots: 4 Trust Badges at Bottom */}
+          <div className="absolute bottom-[2.5%] left-[4%] right-[4%] h-[12%] grid grid-cols-4 pointer-events-none">
+            <a
+              href="#products"
+              className="pointer-events-auto rounded-xl active:bg-black/5 transition-colors"
+              title="Same-day Delivery"
+              aria-label="Same-day Delivery"
+            />
+            <a
+              href="#categories"
+              className="pointer-events-auto rounded-xl active:bg-black/5 transition-colors"
+              title="100% Fresh Produce"
+              aria-label="100% Fresh Produce"
+            />
+            <a
+              href="#categories"
+              className="pointer-events-auto rounded-xl active:bg-black/5 transition-colors"
+              title="Wide Selection"
+              aria-label="Wide Selection"
+            />
+            <a
+              href="#story"
+              className="pointer-events-auto rounded-xl active:bg-black/5 transition-colors"
+              title="Quality Guaranteed"
+              aria-label="Quality Guaranteed"
+            />
+          </div>
+        </div>
+      </section>
 
       {/* ========================================================================= */}
-      {/* MAIN CONTAINER CONTENT */}
+      {/* DESKTOP & TABLET HERO SECTION (MD AND ABOVE)                              */}
       {/* ========================================================================= */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10 pt-6 pb-12 sm:py-14 lg:py-20">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-          {/* Content Column */}
-          <div className="lg:col-span-7 flex flex-col items-start max-w-xl">
-            {/* Tag / Eyebrow */}
-            <div className="gsap-hero-eyebrow inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#123F32]/10 border border-[#123F32]/15 text-[#123F32] mb-3 sm:mb-4">
-              <Leaf className="w-3.5 h-3.5 fill-current" />
-              <span className="text-[11px] sm:text-xs font-bold tracking-[0.14em] uppercase">
-                Fresh Groceries, Delivered Daily
-              </span>
-            </div>
+      <section className="hidden md:flex relative w-full h-[calc(100vh-80px)] min-h-[620px] max-h-[840px] lg:min-h-[680px] lg:max-h-[880px] flex-col justify-between overflow-hidden bg-[#FAF6EF]">
+        {/* Full-bleed desktop background */}
+        <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
+          <img
+            src="/hero-banner.jpg?v=8"
+            alt="Varam stores Canvas Grocery Tote filled with fresh vegetables, artisan bread, and produce"
+            className="w-full h-full object-cover object-[82%_center] will-change-transform"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#FAF6EF] via-[#FAF6EF]/60 via-40% to-transparent pointer-events-none" />
+        </div>
 
-            {/* Main Headline */}
-            <h1 className="gsap-hero-title font-serif-heading font-normal text-3xl sm:text-5xl lg:text-[72px] leading-[1.1] sm:leading-[1.06] tracking-tight text-[#18231E] mb-3 sm:mb-4">
-              Good Food. <br />
-              <span className="italic font-normal">Brighter Days.</span>
-            </h1>
-
-            {/* Subtitle */}
-            <p className="gsap-hero-desc text-sm sm:text-base lg:text-lg text-[#556059] leading-relaxed mb-6 sm:mb-7 font-normal max-w-md">
-              Fresh fruits, vegetables, dairy and more — delivered straight to your door,
-              fresh and hassle-free.
-            </p>
-
-            {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 mb-8 sm:mb-10 w-full sm:w-auto">
-              <a
-                href="#fresh-picks"
-                className="gsap-hero-cta btn-magnetic inline-flex items-center justify-center gap-2.5 px-7 sm:px-8 py-3.5 sm:py-4 rounded-full bg-[#123F32] text-white text-sm font-semibold hover:bg-[#1B5746] shadow-md hover:shadow-lg transition-all cursor-pointer group"
-              >
-                <span>Shop Fresh Produce</span>
-                <ArrowRight className="w-4 h-4 text-[#D6F36A] group-hover:translate-x-1.5 transition-transform" />
-              </a>
-
-              <button
-                type="button"
-                onClick={() => setIsVideoModalOpen(true)}
-                className="gsap-hero-cta btn-magnetic inline-flex items-center justify-center gap-3 px-6 py-3.5 sm:py-4 rounded-full bg-white hover:bg-[#F4F6F2] text-[#18231E] hover:text-[#123F32] text-sm font-semibold shadow-xs hover:shadow-sm border border-stone-200/90 cursor-pointer group transition-all"
-              >
-                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-stone-100 border border-stone-200 flex items-center justify-center text-[#18231E] group-hover:scale-105 group-hover:bg-[#123F32] group-hover:text-white transition-all">
-                  <Play className="w-3 sm:w-3.5 h-3 sm:h-3.5 fill-current ml-0.5" />
-                </div>
-                <span>Watch Video</span>
-              </button>
-            </div>
-
-            {/* ========================================================================= */}
-            {/* MOBILE ONLY HERO SHOWCASE IMAGE (Clean, framed card below CTAs) */}
-            {/* ========================================================================= */}
-            <div className="lg:hidden w-full mb-8">
-              <div className="relative w-full aspect-[16/11] rounded-3xl overflow-hidden shadow-lg border border-black/5 bg-white">
-                <img
-                  src="/hero-banner.jpg?v=6"
-                  alt="Varam stores organic grocery tote with fresh vegetables and fruits"
-                  className="w-full h-full object-cover object-[75%_center]"
-                />
-                {/* 100% Organic floating badge on top right */}
-                <div className="absolute top-3.5 right-3.5 px-3 py-1.5 rounded-full bg-[#123F32]/90 backdrop-blur-md text-[#D6F36A] border border-white/20 text-[11px] font-bold flex items-center gap-1.5 shadow-md">
-                  <Sparkles className="w-3 h-3" />
-                  <span>Farm Fresh Harvest</span>
-                </div>
-              </div>
-            </div>
-
-            {/* ========================================================================= */}
-            {/* 4 USPs with clean elevated cards */}
-            {/* ========================================================================= */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 w-full">
-              <div className="gsap-hero-usp flex items-center gap-2.5 p-2.5 sm:p-3 rounded-2xl bg-white/85 sm:bg-transparent backdrop-blur-xs sm:backdrop-blur-none border border-stone-200/80 sm:border-0 shadow-2xs sm:shadow-none">
-                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-stone-100 sm:bg-white border border-stone-200/80 flex items-center justify-center text-[#123F32] shrink-0 shadow-2xs">
-                  <Truck className="w-4 h-4 text-[#123F32]" />
-                </div>
-                <div className="leading-tight">
-                  <p className="text-xs font-bold text-[#18231E]">Same-day</p>
-                  <p className="text-[10px] sm:text-[11px] text-[#737A72]">Delivery</p>
-                </div>
+        {/* Content container */}
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 w-full relative z-10 pt-8 lg:pt-14 flex-1 flex flex-col justify-between">
+          <div className="w-full">
+            <div className="max-w-md lg:max-w-xl flex flex-col items-start">
+              {/* Eyebrow */}
+              <div className="mb-3">
+                <span className="text-xs font-bold tracking-[0.16em] uppercase text-[#455048] block leading-tight">
+                  Fresh Groceries,
+                </span>
+                <span className="text-xs font-bold tracking-[0.16em] uppercase text-[#455048] block leading-tight">
+                  Delivered Daily
+                </span>
+                <div className="w-9 h-0.5 bg-[#8EBC45] rounded-full mt-1.5" />
               </div>
 
-              <div className="gsap-hero-usp flex items-center gap-2.5 p-2.5 sm:p-3 rounded-2xl bg-white/85 sm:bg-transparent backdrop-blur-xs sm:backdrop-blur-none border border-stone-200/80 sm:border-0 shadow-2xs sm:shadow-none">
-                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-stone-100 sm:bg-white border border-stone-200/80 flex items-center justify-center text-[#123F32] shrink-0 shadow-2xs">
-                  <Leaf className="w-4 h-4 text-[#123F32]" />
-                </div>
-                <div className="leading-tight">
-                  <p className="text-xs font-bold text-[#18231E]">100%</p>
-                  <p className="text-[10px] sm:text-[11px] text-[#737A72]">Fresh Produce</p>
-                </div>
-              </div>
+              {/* Main Headline */}
+              <h1 className="font-serif-heading text-5xl lg:text-[72px] leading-[1.04] tracking-tight text-[#18231E] mb-4">
+                <span className="block font-bold">Good Food</span>
+                <span className="block italic font-normal text-[#235E49]">
+                  Brighter
+                </span>
+                <span className="block italic font-normal text-[#235E49]">
+                  Days
+                </span>
+              </h1>
 
-              <div className="gsap-hero-usp flex items-center gap-2.5 p-2.5 sm:p-3 rounded-2xl bg-white/85 sm:bg-transparent backdrop-blur-xs sm:backdrop-blur-none border border-stone-200/80 sm:border-0 shadow-2xs sm:shadow-none">
-                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-stone-100 sm:bg-white border border-stone-200/80 flex items-center justify-center text-[#123F32] shrink-0 shadow-2xs">
-                  <Layers className="w-4 h-4 text-[#123F32]" />
-                </div>
-                <div className="leading-tight">
-                  <p className="text-xs font-bold text-[#18231E]">Wide</p>
-                  <p className="text-[10px] sm:text-[11px] text-[#737A72]">Selection</p>
-                </div>
-              </div>
+              {/* Subtitle */}
+              <p className="text-sm lg:text-base text-[#556059] leading-relaxed mb-6 font-normal max-w-sm">
+                Fresh fruits, vegetables, dairy and more — delivered to your door,
+                fresh and hassle-free.
+              </p>
 
-              <div className="gsap-hero-usp flex items-center gap-2.5 p-2.5 sm:p-3 rounded-2xl bg-white/85 sm:bg-transparent backdrop-blur-xs sm:backdrop-blur-none border border-stone-200/80 sm:border-0 shadow-2xs sm:shadow-none">
-                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-stone-100 sm:bg-white border border-stone-200/80 flex items-center justify-center text-[#123F32] shrink-0 shadow-2xs">
-                  <ShieldCheck className="w-4 h-4 text-[#123F32]" />
-                </div>
-                <div className="leading-tight">
-                  <p className="text-xs font-bold text-[#18231E]">Quality</p>
-                  <p className="text-[10px] sm:text-[11px] text-[#737A72]">Guaranteed</p>
-                </div>
+              {/* Action Buttons */}
+              <div className="flex items-center gap-4 mb-2">
+                <a
+                  href="#products"
+                  className="btn-magnetic inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-[#123F32] hover:bg-[#1B5746] text-white text-sm font-bold shadow-md hover:shadow-lg transition-all cursor-pointer group"
+                >
+                  <span>Shop Now</span>
+                  <ArrowRight className="w-3.5 h-3.5 text-white group-hover:translate-x-1 transition-transform" />
+                </a>
+
+                <button
+                  type="button"
+                  onClick={() => setIsVideoModalOpen(true)}
+                  className="inline-flex items-center gap-2.5 text-sm font-bold text-[#18231E] hover:text-[#123F32] cursor-pointer group transition-colors py-1"
+                >
+                  <div className="w-8 h-8 rounded-full bg-white shadow-sm border border-black/5 flex items-center justify-center text-[#18231E] group-hover:scale-108 transition-all">
+                    <Play className="w-3 h-3 fill-[#18231E] ml-0.5 text-[#18231E]" />
+                  </div>
+                  <span>Watch Video</span>
+                </button>
               </div>
             </div>
           </div>
 
-          {/* Desktop Right Column Spacer */}
-          <div className="lg:col-span-5 relative hidden lg:flex items-center justify-end min-h-[460px] pointer-events-none" />
+          {/* Bottom Trust Cards */}
+          <div className="w-full mt-auto pb-4">
+            <div className="flex items-center justify-center gap-1.5 mb-3">
+              <span className="w-7 h-1 rounded-full bg-white/90 shadow-2xs" />
+              <span className="w-2 h-1 rounded-full bg-white/50" />
+              <span className="w-2 h-1 rounded-full bg-white/50" />
+            </div>
+
+            <div className="w-full bg-white/95 backdrop-blur-md rounded-3xl shadow-xl border border-black/[0.06] p-4">
+              <div className="grid grid-cols-4 divide-x divide-stone-200/80">
+                <div className="flex flex-col items-center text-center px-2">
+                  <Truck className="w-5 h-5 text-[#18231E] mb-1.5 stroke-[1.8]" />
+                  <p className="text-xs font-bold text-[#18231E] leading-tight">Same-day</p>
+                  <p className="text-[10.5px] text-[#737A72] leading-tight mt-0.5">Delivery</p>
+                </div>
+                <div className="flex flex-col items-center text-center px-2">
+                  <Leaf className="w-5 h-5 text-[#18231E] mb-1.5 stroke-[1.8]" />
+                  <p className="text-xs font-bold text-[#18231E] leading-tight">100%</p>
+                  <p className="text-[10.5px] text-[#737A72] leading-tight mt-0.5">Fresh Produce</p>
+                </div>
+                <div className="flex flex-col items-center text-center px-2">
+                  <Layers className="w-5 h-5 text-[#18231E] mb-1.5 stroke-[1.8]" />
+                  <p className="text-xs font-bold text-[#18231E] leading-tight">Wide</p>
+                  <p className="text-[10.5px] text-[#737A72] leading-tight mt-0.5">Selection</p>
+                </div>
+                <div className="flex flex-col items-center text-center px-2">
+                  <ShieldCheck className="w-5 h-5 text-[#18231E] mb-1.5 stroke-[1.8]" />
+                  <p className="text-xs font-bold text-[#18231E] leading-tight">Quality</p>
+                  <p className="text-[10.5px] text-[#737A72] leading-tight mt-0.5">Guaranteed</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
 
       <VideoModal
         isOpen={isVideoModalOpen}
         onClose={() => setIsVideoModalOpen(false)}
       />
-    </section>
+    </>
   );
 };
