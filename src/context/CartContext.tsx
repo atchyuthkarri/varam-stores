@@ -1,11 +1,20 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { Product, CartItem } from '../types';
+import { animateFlyToCart } from '../utils/flyToCart';
 
 interface CartContextType {
   items: CartItem[];
-  addToCart: (product: Product, quantity?: number) => void;
+  addToCart: (
+    product: Product,
+    quantity?: number,
+    source?: HTMLElement | React.MouseEvent | { x: number; y: number } | null
+  ) => void;
   removeFromCart: (productId: string) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
+  updateQuantity: (
+    productId: string,
+    quantity: number,
+    source?: HTMLElement | React.MouseEvent | { x: number; y: number } | null
+  ) => void;
   clearCart: () => void;
   isCartOpen: boolean;
   setIsCartOpen: (open: boolean) => void;
@@ -22,18 +31,24 @@ interface CartContextType {
   amountNeededForFreeDelivery: number;
   toastMessage: string | null;
   showToast: (msg: string) => void;
+  flyToCart: (
+    product: Product,
+    source?: HTMLElement | React.MouseEvent | { x: number; y: number } | null
+  ) => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-const CART_STORAGE_KEY = 'varamstores_cart_v1';
-const COUPON_STORAGE_KEY = 'varamstores_coupon_v1';
+const CART_STORAGE_KEY = 'freshmart_cart_v1';
+const LEGACY_CART_KEY = 'varamstores_cart_v1';
+const COUPON_STORAGE_KEY = 'freshmart_coupon_v1';
+const LEGACY_COUPON_KEY = 'varamstores_coupon_v1';
 const FREE_DELIVERY_THRESHOLD = 50.0;
 
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [items, setItems] = useState<CartItem[]>(() => {
     try {
-      const saved = localStorage.getItem(CART_STORAGE_KEY);
+      const saved = localStorage.getItem(CART_STORAGE_KEY) || localStorage.getItem(LEGACY_CART_KEY);
       return saved ? JSON.parse(saved) : [];
     } catch {
       return [];
@@ -43,7 +58,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [appliedCoupon, setAppliedCoupon] = useState<string | null>(() => {
     try {
-      return localStorage.getItem(COUPON_STORAGE_KEY) || null;
+      return localStorage.getItem(COUPON_STORAGE_KEY) || localStorage.getItem(LEGACY_COUPON_KEY) || null;
     } catch {
       return null;
     }
@@ -74,7 +89,14 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }, 2800);
   };
 
-  const addToCart = (product: Product, quantity: number = 1) => {
+  const addToCart = (
+    product: Product,
+    quantity: number = 1,
+    source?: HTMLElement | React.MouseEvent | { x: number; y: number } | null
+  ) => {
+    // Trigger the pop-up & fall-into-cart animation!
+    animateFlyToCart(product, source);
+
     setItems((prev) => {
       const existing = prev.find((item) => item.product.id === product.id);
       if (existing) {
@@ -93,16 +115,25 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setItems((prev) => prev.filter((item) => item.product.id !== productId));
   };
 
-  const updateQuantity = (productId: string, quantity: number) => {
+  const updateQuantity = (
+    productId: string,
+    quantity: number,
+    source?: HTMLElement | React.MouseEvent | { x: number; y: number } | null
+  ) => {
     if (quantity <= 0) {
       removeFromCart(productId);
       return;
     }
-    setItems((prev) =>
-      prev.map((item) =>
+    setItems((prev) => {
+      const existing = prev.find((item) => item.product.id === productId);
+      if (existing && quantity > existing.quantity) {
+        // Trigger fly to cart animation on increment!
+        animateFlyToCart(existing.product, source);
+      }
+      return prev.map((item) =>
         item.product.id === productId ? { ...item, quantity } : item
-      )
-    );
+      );
+    });
   };
 
   const clearCart = () => {
@@ -164,6 +195,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         amountNeededForFreeDelivery,
         toastMessage,
         showToast,
+        flyToCart: animateFlyToCart,
       }}
     >
       {children}

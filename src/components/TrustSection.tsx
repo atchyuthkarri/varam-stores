@@ -4,22 +4,22 @@ import { customerReviews } from '../data/reviews';
 
 export const TrustSection: React.FC = () => {
   return (
-    <section className="py-16 sm:py-24 bg-[#F8F8F2]">
+    <section className="py-16 sm:py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-14">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E8EFE5] text-[#2F7654] text-xs font-bold uppercase tracking-wider mb-3">
+          <div className="inline-flex items-center justify-center gap-1.5 text-xs font-bold uppercase tracking-[0.18em] text-[#B45309] mb-2.5">
             <CheckCircle className="w-3.5 h-3.5" />
             <span>Verified Customer Stories</span>
           </div>
 
-          <h2 className="font-serif-heading text-3xl sm:text-4xl text-[#123F32] font-bold mb-3">
+          <h2 className="font-serif-heading text-3xl sm:text-4xl text-[#18181B] font-bold mb-3">
             Loved by Thousands
           </h2>
 
           <p className="text-base text-[#737A72]">
             Fresh groceries, happier homes. Here is what our community says about
-            their weekly Varam stores deliveries.
+            their weekly FreshMart deliveries.
           </p>
         </div>
 
@@ -28,7 +28,7 @@ export const TrustSection: React.FC = () => {
           {customerReviews.slice(0, 3).map((review) => (
             <div
               key={review.id}
-              className="bg-white rounded-3xl p-6 sm:p-7 border border-[#E8ECE5] shadow-xs hover:shadow-lg hover:border-[#123F32]/20 transition-all duration-300 flex flex-col justify-between"
+              className="bg-white rounded-3xl p-6 sm:p-7 border border-[#E8ECE5] shadow-xs hover:shadow-lg hover:border-[#F5D103]/20 transition-all duration-300 flex flex-col justify-between"
             >
               <div>
                 {/* 5 Stars */}
@@ -42,7 +42,7 @@ export const TrustSection: React.FC = () => {
                 </div>
 
                 {/* Quote text */}
-                <p className="text-sm sm:text-base text-[#18231E] leading-relaxed italic mb-6">
+                <p className="text-sm sm:text-base text-[#18181B] leading-relaxed italic mb-6">
                   &ldquo;{review.text}&rdquo;
                 </p>
               </div>
@@ -55,13 +55,13 @@ export const TrustSection: React.FC = () => {
                   className="w-11 h-11 rounded-full object-cover border border-[#DCE2D8]"
                 />
                 <div>
-                  <h4 className="text-sm font-bold text-[#18231E] flex items-center gap-1.5">
+                  <h4 className="text-sm font-bold text-[#18181B] flex items-center gap-1.5">
                     <span>{review.name}</span>
-                    <span className="text-[10px] font-normal text-[#2F7654] bg-[#EAF0E6] px-1.5 py-0.2 rounded">
+                    <span className="text-[10px] font-semibold text-[#92400E] bg-amber-100 px-1.5 py-0.5 rounded border border-amber-200/60">
                       Verified
                     </span>
                   </h4>
-                  <p className="text-xs text-[#737A72]">{review.location}</p>
+                  <p className="text-xs text-stone-600 font-medium">{review.location}</p>
                 </div>
               </div>
             </div>
@@ -69,18 +69,18 @@ export const TrustSection: React.FC = () => {
         </div>
 
         {/* Trustpilot / Rating Footer Banner */}
-        <div className="mt-12 bg-white rounded-2xl border border-[#E8ECE5] p-4 sm:p-5 flex flex-wrap items-center justify-between gap-4 max-w-3xl mx-auto shadow-2xs">
+        <div className="mt-12 bg-white rounded-2xl border border-stone-200 p-4 sm:p-5 flex flex-wrap items-center justify-between gap-4 max-w-3xl mx-auto shadow-2xs">
           <div className="flex items-center gap-3">
-            <div className="flex items-center text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-lg font-bold text-sm">
-              <Star className="w-4 h-4 fill-emerald-600 mr-1" />
+            <div className="flex items-center text-[#92400E] bg-amber-50 border border-amber-200/60 px-2.5 py-1 rounded-lg font-bold text-sm">
+              <Star className="w-4 h-4 fill-[#F5D103] text-[#B45309] mr-1" />
               <span>4.9 / 5.0</span>
             </div>
-            <span className="text-xs sm:text-sm text-[#737A72]">
+            <span className="text-xs sm:text-sm text-stone-600">
               Based on <strong>12,400+</strong> verified local deliveries
             </span>
           </div>
 
-          <span className="text-xs font-semibold text-[#2F7654]">
+          <span className="text-xs font-semibold text-[#B45309]">
             99.4% On-Time Guarantee
           </span>
         </div>

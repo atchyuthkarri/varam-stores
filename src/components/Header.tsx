@@ -8,74 +8,70 @@ import {
   X,
   User,
   ChevronRight,
-  Sparkles,
   Tag,
-  Leaf,
   Store,
   Info,
 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
+import { useNavigation } from '../context/NavigationContext';
 import { products } from '../data/products';
 import type { Product } from '../types';
 import { getLenis } from '../hooks/useGsapScroll';
+import { motion, AnimatePresence } from 'framer-motion';
+import { dropdownVariants, badgePopVariants } from '../motion/variants';
 
 interface HeaderProps {
   onOpenLocationModal: () => void;
   selectedPostalCode: string;
   onSelectProduct: (product: Product) => void;
-  onFilterWishlist: () => void;
-  isWishlistFilterActive: boolean;
+  onOpenAccountModal?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
   onOpenLocationModal,
   selectedPostalCode,
   onSelectProduct,
-  onFilterWishlist,
-  isWishlistFilterActive,
+  onOpenAccountModal,
 }) => {
   const { totalItems, total, setIsCartOpen } = useCart();
   const { wishlistCount } = useWishlist();
+  const { currentView, filterOnSale, goToHome, goToShop, goToWishlist, goToAccount, scrollToSection } = useNavigation();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isVisible, setIsVisible] = useState(true);
 
   const searchContainerRef = useRef<HTMLDivElement>(null);
   const mobileSearchRef = useRef<HTMLDivElement>(null);
-  const lastScrollYRef = useRef(0);
 
   const searchResults = searchQuery.trim()
-    ? products.filter(
-        (p) =>
-          p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          p.categoryLabel.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          p.description.toLowerCase().includes(searchQuery.toLowerCase())
-      )
+    ? products
+        .filter(
+          (p) =>
+            p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            p.categoryLabel.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            p.description.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+        .slice(0, 6)
     : [];
 
-  // Scroll detection for smart hide/reveal navbar
+  const handleSearchSubmit = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (searchQuery.trim()) {
+      goToShop({ search: searchQuery.trim() });
+      setIsSearchFocused(false);
+      setIsMobileSearchOpen(false);
+    }
+  };
+
+  // Track scroll position for subtle backdrop blur/border styling
   useEffect(() => {
     const handleScroll = (y?: number) => {
       const scrollPos = typeof y === 'number' ? y : window.scrollY;
-      setIsScrolled(scrollPos > 15);
-
-      const diff = scrollPos - lastScrollYRef.current;
-      if (scrollPos > 120) {
-        if (diff > 8 && !isMobileMenuOpen && !isMobileSearchOpen) {
-          setIsVisible(false);
-        } else if (diff < -8) {
-          setIsVisible(true);
-        }
-      } else {
-        setIsVisible(true);
-      }
-
-      lastScrollYRef.current = scrollPos;
+      setIsScrolled(scrollPos > 10);
     };
 
     window.addEventListener('scroll', () => handleScroll(), { passive: true });
@@ -87,27 +83,13 @@ export const Header: React.FC<HeaderProps> = ({
       const lenisHandler = ({ scroll }: { scroll: number }) => handleScroll(scroll);
       lenis.on('scroll', lenisHandler);
       offLenis = () => lenis.off('scroll', lenisHandler);
-    } else {
-      const timer = setTimeout(() => {
-        const l = getLenis();
-        if (l) {
-          const lenisHandler = ({ scroll }: { scroll: number }) => handleScroll(scroll);
-          l.on('scroll', lenisHandler);
-          offLenis = () => l.off('scroll', lenisHandler);
-        }
-      }, 150);
-      return () => {
-        clearTimeout(timer);
-        window.removeEventListener('scroll', () => handleScroll());
-        if (offLenis) offLenis();
-      };
     }
 
     return () => {
       window.removeEventListener('scroll', () => handleScroll());
       if (offLenis) offLenis();
     };
-  }, [isMobileMenuOpen, isMobileSearchOpen]);
+  }, []);
 
   // Click outside search
   useEffect(() => {
@@ -123,49 +105,71 @@ export const Header: React.FC<HeaderProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Lock navbar visible when mobile menu is open
-  useEffect(() => {
-    if (isMobileMenuOpen || isMobileSearchOpen) {
-      setIsVisible(true);
-    }
-  }, [isMobileMenuOpen, isMobileSearchOpen]);
-
-  const navLinks = [
-    { label: 'Shop', href: '#products', icon: Store },
-    { label: 'Categories', href: '#categories', icon: Leaf },
-    { label: 'Deals', href: '#promotions', icon: Tag, badge: '20% OFF' },
-    { label: 'Fresh Picks', href: '#fresh-picks', icon: Sparkles, badge: 'Daily' },
-    { label: 'About', href: '#story', icon: Info },
+  const navLinks: {
+    label: string;
+    action: () => void;
+    icon: React.ComponentType<{ className?: string }>;
+    active?: boolean;
+    badge?: string;
+  }[] = [
+    {
+      label: 'Home',
+      action: () => goToHome(),
+      icon: Store,
+      active: currentView === 'home',
+    },
+    {
+      label: 'Shop',
+      action: () => goToShop({ category: 'all', filterOnSale: false, search: '' }),
+      icon: Store,
+      active: currentView === 'shop' && !filterOnSale,
+    },
+    {
+      label: 'Deals',
+      action: () => goToShop({ category: 'all', filterOnSale: true, search: '' }),
+      icon: Tag,
+      active: currentView === 'shop' && filterOnSale,
+      badge: '20% OFF',
+    },
+    {
+      label: 'Our Story',
+      action: () => scrollToSection('story'),
+      icon: Info,
+    },
+    {
+      label: 'My Account',
+      action: () => (onOpenAccountModal ? onOpenAccountModal() : goToAccount()),
+      icon: User,
+      active: currentView === 'account',
+    },
   ];
 
   return (
     <>
       <header
-        className={`sticky top-0 z-40 w-full transition-all duration-300 ease-in-out transform will-change-transform ${
-          isVisible ? 'translate-y-0' : '-translate-y-full'
-        } ${
+        className={`fixed top-0 left-0 right-0 w-full z-50 transition-colors duration-200 ${
           isScrolled || isMobileMenuOpen || isMobileSearchOpen
-            ? 'bg-[#FAF6EF]/95 backdrop-blur-md border-b border-stone-200/80 shadow-xs'
-            : 'bg-transparent border-b border-transparent shadow-none'
+            ? 'bg-white/95 backdrop-blur-md border-b border-stone-200/80 shadow-xs'
+            : 'bg-white/95 backdrop-blur-md border-b border-stone-200/70 shadow-2xs'
         }`}
       >
-        <div className="w-full px-3 sm:px-6 lg:px-10 xl:px-12">
-          <div className="flex items-center justify-between h-14 sm:h-20 gap-1 sm:gap-3 lg:gap-8 w-full min-w-0">
-            {/* 1. Logo & Mobile Hamburger (Left End) */}
-            <div className="flex items-center gap-1.5 sm:gap-3 min-w-0 shrink">
-              {/* Mobile Hamburger / Close Button on Left */}
+        <div className="w-full px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-14 sm:h-16 gap-3 lg:gap-6 w-full min-w-0">
+            {/* 1. Logo & Mobile Hamburger */}
+            <div className="flex items-center gap-1.5 sm:gap-2.5 min-w-0 shrink-0">
+              {/* Mobile Hamburger Button */}
               <button
                 type="button"
                 onClick={() => {
                   setIsMobileMenuOpen(!isMobileMenuOpen);
                   if (isMobileSearchOpen) setIsMobileSearchOpen(false);
                 }}
-                className="md:hidden p-1.5 -ml-1 rounded-full flex items-center justify-center text-stone-800 hover:text-[#123F32] hover:bg-black/5 transition-all cursor-pointer relative shrink-0"
+                className="lg:hidden p-1.5 -ml-1 rounded-full flex items-center justify-center text-stone-800 hover:text-[#B45309] hover:bg-black/5 transition-all cursor-pointer relative shrink-0"
                 aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
               >
                 <div
                   className={`transition-transform duration-300 transform ${
-                    isMobileMenuOpen ? 'rotate-90 scale-105 text-[#123F32]' : 'rotate-0'
+                    isMobileMenuOpen ? 'rotate-90 scale-105 text-[#18181B]' : 'rotate-0'
                   }`}
                 >
                   {isMobileMenuOpen ? (
@@ -176,149 +180,148 @@ export const Header: React.FC<HeaderProps> = ({
                 </div>
               </button>
 
-              <a
-                href="#"
-                className="flex items-center gap-2 sm:gap-2.5 min-w-0 group cursor-pointer"
-                aria-label="Varam stores Home"
+              {/* Brand Logo & Name */}
+              <button
+                type="button"
+                onClick={goToHome}
+                className="flex items-center group cursor-pointer focus:outline-none py-1"
+                aria-label="Varam Foods Home"
               >
-                <div className="w-7 h-7 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-[#123F32] flex items-center justify-center text-[#D6F36A] shadow-xs group-hover:scale-108 group-hover:rotate-3 transition-transform duration-300 shrink-0">
-                  <svg
-                    className="w-3.5 h-3.5 sm:w-5 sm:h-5 fill-current"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22l1-2.3A9.49 9.49 0 0 0 12 21a10 10 0 0 0 10-10V3h-8c-4.42 0-8 3.58-8 8v1h2v-1a6 6 0 0 1 6-6h6v3a8 8 0 0 1-8 8c-.68 0-1.35-.07-2-.2 1.34-3.72 3.5-7.8 7-9.8z" />
-                  </svg>
-                </div>
-                <span className="font-serif-heading text-[15px] xs:text-base sm:text-2xl font-bold tracking-tight text-[#18231E] group-hover:text-[#123F32] transition-colors truncate">
-                  Varam stores
-                </span>
-              </a>
+                <img
+                  src="/varam-logo.png"
+                  alt="Varam Foods"
+                  className="h-7 sm:h-8.5 w-auto object-contain group-hover:scale-105 transition-transform duration-200 drop-shadow-xs"
+                />
+              </button>
             </div>
 
             {/* 2. Desktop Navigation Links */}
             <nav
               aria-label="Main Navigation"
-              className="hidden xl:flex items-center gap-7 text-[14.5px] font-semibold text-[#18231E]"
+              className="hidden lg:flex items-center gap-5 xl:gap-6 text-xs font-semibold text-[#18181B]"
             >
               {navLinks.map((link) => (
-                <a
+                <button
                   key={link.label}
-                  href={link.href}
-                  className="text-[#18231E] hover:text-[#123F32] transition-colors py-1 nav-link-hover"
+                  type="button"
+                  onClick={link.action}
+                  className={`py-1 nav-link-hover transition-colors cursor-pointer ${
+                    link.active
+                      ? 'text-[#18181B] font-bold'
+                      : 'text-[#556059] hover:text-[#B45309]'
+                  }`}
                 >
-                  {link.label}
-                </a>
+                  <span>{link.label}</span>
+                </button>
               ))}
             </nav>
 
             {/* 3. Search Bar (Fluid Center for Desktop) */}
             <div
               ref={searchContainerRef}
-              className="relative flex-1 max-w-md lg:max-w-lg hidden md:block"
+              className="relative flex-1 max-w-sm lg:max-w-md xl:max-w-xl mx-2 lg:mx-4 hidden md:block"
             >
-              <div className="relative">
+              <form onSubmit={handleSearchSubmit} className="relative">
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onFocus={() => setIsSearchFocused(true)}
-                  placeholder="Search for fresh fruits, vegetables, dairy..."
+                  placeholder="Search fresh grocery..."
                   aria-label="Search products"
-                  className={`w-full text-[#18231E] text-xs sm:text-sm placeholder-[#737A72] pl-10 pr-4 py-2.5 rounded-full border focus:outline-none focus:ring-2 focus:ring-[#123F32]/15 focus:border-[#123F32] transition-all ${
-                    isScrolled
-                      ? 'bg-white/90 border-stone-200/90'
-                      : 'bg-white/85 backdrop-blur-xs border-stone-200/80 shadow-2xs hover:bg-white'
-                  }`}
+                  className="w-full text-[#18181B] text-xs placeholder-[#737A72] pl-8 pr-7 py-1.5 rounded-full border border-stone-200/80 bg-white/70 hover:bg-white focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#F5D103]/40 focus:border-[#F5D103] transition-all"
                 />
-                <Search className="w-4 h-4 text-[#737A72] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <Search className="w-3.5 h-3.5 text-[#737A72] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                 {searchQuery && (
                   <button
                     type="button"
                     onClick={() => setSearchQuery('')}
                     aria-label="Clear search"
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-700 cursor-pointer"
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-700 cursor-pointer"
                   >
-                    <X className="w-3.5 h-3.5" />
+                    <X className="w-3 h-3" />
                   </button>
                 )}
-              </div>
+              </form>
 
-              {/* Instant Search Dropdown (Desktop) */}
-              <div
-                className={`absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-xl border border-[#E8ECE5] p-3 z-50 max-h-96 overflow-y-auto transition-all duration-200 origin-top transform ${
-                  isSearchFocused && searchQuery.trim().length > 0
-                    ? 'opacity-100 scale-100 pointer-events-auto'
-                    : 'opacity-0 scale-95 pointer-events-none'
-                }`}
-              >
-                <div className="text-xs font-semibold uppercase tracking-wider text-[#737A72] px-3 py-1.5 flex items-center justify-between">
-                  <span>Found {searchResults.length} items</span>
-                  <span className="text-[11px] text-[#2F7654]">Fresh Daily</span>
-                </div>
-
-                {searchResults.length === 0 ? (
-                  <div className="text-center py-6 px-4 text-xs text-[#737A72]">
-                    No items match &quot;{searchQuery}&quot;. Try &apos;tomatoes&apos; or &apos;bananas&apos;.
-                  </div>
-                ) : (
-                  <div className="divide-y divide-stone-100">
-                    {searchResults.map((product) => (
+              {/* Instant Search Dropdown (Desktop) Animated */}
+              <AnimatePresence>
+                {isSearchFocused && searchQuery.trim().length > 0 && (
+                  <motion.div
+                    variants={dropdownVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                    className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-xl border border-[#E8ECE5] p-3 z-50 max-h-96 overflow-y-auto origin-top"
+                  >
+                    <div className="text-xs font-semibold uppercase tracking-wider text-[#737A72] px-3 py-1.5 flex items-center justify-between">
+                      <span>Found {searchResults.length} matches</span>
                       <button
-                        key={product.id}
                         type="button"
-                        onClick={() => {
-                          onSelectProduct(product);
-                          setIsSearchFocused(false);
-                          setSearchQuery('');
-                        }}
-                        className="w-full flex items-center gap-3 p-2 rounded-xl hover:bg-[#F8F8F2] transition-colors text-left cursor-pointer"
+                        onClick={() => handleSearchSubmit()}
+                        className="text-[11px] text-[#B45309] font-bold hover:underline cursor-pointer"
                       >
-                        <img
-                          src={product.image}
-                          alt={product.name}
-                          className="w-10 h-10 object-cover rounded-lg flex-shrink-0"
-                        />
-                        <div className="flex-1 min-w-0">
-                          <p className="text-xs font-bold text-[#18231E] truncate">
-                            {product.name}
-                          </p>
-                          <p className="text-[11px] text-[#737A72]">
-                            {product.categoryLabel}
-                          </p>
-                        </div>
-                        <span className="text-xs font-bold text-[#123F32]">
-                          £{product.price.toFixed(2)}
-                        </span>
-                        <ChevronRight className="w-3.5 h-3.5 text-stone-400" />
+                        View All in Catalogue →
                       </button>
-                    ))}
-                  </div>
+                    </div>
+
+                    {searchResults.length === 0 ? (
+                      <div className="text-center py-6 px-4 text-xs text-[#737A72]">
+                        No items match &quot;{searchQuery}&quot;. Try &apos;tomatoes&apos; or &apos;bananas&apos;.
+                      </div>
+                    ) : (
+                      <div className="divide-y divide-stone-100">
+                        {searchResults.map((product) => (
+                          <button
+                            key={product.id}
+                            type="button"
+                            onClick={() => {
+                              onSelectProduct(product);
+                              setIsSearchFocused(false);
+                              setSearchQuery('');
+                            }}
+                            className="w-full flex items-center gap-3 p-2 rounded-xl hover:bg-[#F8FAFC] transition-colors text-left cursor-pointer active:scale-98"
+                          >
+                            <img
+                              src={product.image}
+                              alt={product.name}
+                              className="w-10 h-10 object-cover rounded-lg flex-shrink-0 bg-stone-50"
+                            />
+                            <div className="flex-1 min-w-0">
+                              <p className="text-xs font-bold text-[#18181B] truncate">
+                                {product.name}
+                              </p>
+                              <p className="text-[11px] text-[#737A72]">
+                                {product.categoryLabel}
+                              </p>
+                            </div>
+                            <span className="text-xs font-bold text-[#18181B]">
+                              £{product.price.toFixed(2)}
+                            </span>
+                            <ChevronRight className="w-3.5 h-3.5 text-stone-400" />
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </motion.div>
                 )}
-              </div>
+              </AnimatePresence>
             </div>
 
             {/* 4. Right Controls */}
-            <div className="flex items-center gap-1.5 sm:gap-3 flex-shrink-0">
+            <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
               {/* Delivery Location (Desktop) */}
               <button
                 type="button"
                 onClick={onOpenLocationModal}
-                className={`hidden lg:flex items-center gap-2 px-3.5 py-1.5 text-xs font-medium text-[#18231E] hover:text-[#123F32] rounded-full border transition-all hover:scale-103 cursor-pointer ${
-                  isScrolled
-                    ? 'bg-white/80 border-stone-200'
-                    : 'bg-white/85 backdrop-blur-xs border-stone-200/80 shadow-2xs hover:bg-white'
-                }`}
+                className="hidden xl:flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-medium text-[#556059] hover:text-[#B45309] rounded-full border border-stone-200/70 bg-white/60 hover:bg-white transition-colors cursor-pointer"
                 title="Change Delivery Location"
               >
-                <MapPin className="w-3.5 h-3.5 text-[#2F7654]" />
-                <div className="text-left leading-tight">
-                  <span className="text-[9px] text-[#737A72] block">Deliver to</span>
-                  <span className="font-bold text-[11px]">{selectedPostalCode}</span>
-                </div>
+                <MapPin className="w-3 h-3 text-[#B45309]" />
+                <span className="truncate max-w-[100px]">{selectedPostalCode}</span>
               </button>
 
-              {/* Mobile Right Icons (Matching Reference Mockup: Search, Profile, Cart Badge) */}
+              {/* Mobile Right Icons */}
               <div className="flex md:hidden items-center gap-0.5">
                 {/* Mobile Search Icon */}
                 <button
@@ -327,111 +330,144 @@ export const Header: React.FC<HeaderProps> = ({
                     setIsMobileSearchOpen(!isMobileSearchOpen);
                     if (isMobileMenuOpen) setIsMobileMenuOpen(false);
                   }}
-                  className={`p-1.5 rounded-full transition-colors cursor-pointer text-[#18231E] hover:text-[#123F32] ${
-                    isMobileSearchOpen ? 'bg-black/5 text-[#123F32]' : ''
+                  className={`p-1.5 rounded-full transition-colors cursor-pointer text-[#18181B] hover:text-[#B45309] ${
+                    isMobileSearchOpen ? 'bg-black/5 text-[#18181B]' : ''
                   }`}
                   aria-label="Toggle Search"
                 >
-                  <Search className="w-5 h-5 stroke-[2]" />
+                  <Search className="w-4.5 h-4.5 stroke-[2]" />
                 </button>
 
                 {/* Mobile Account Icon */}
                 <button
                   type="button"
-                  className="p-1.5 rounded-full transition-colors cursor-pointer text-[#18231E] hover:text-[#123F32]"
+                  onClick={onOpenAccountModal || goToAccount}
+                  className={`p-1.5 rounded-full transition-colors cursor-pointer ${
+                    currentView === 'account'
+                      ? 'text-[#245E4A] bg-[#245E4A]/10'
+                      : 'text-[#18181B] hover:text-[#B45309]'
+                  }`}
                   aria-label="User Account"
                 >
-                  <User className="w-5 h-5 stroke-[2]" />
+                  <User className="w-4.5 h-4.5 stroke-[2]" />
                 </button>
 
                 {/* Mobile Shopping Cart with Round Badge */}
                 <button
                   type="button"
+                  id="mobile-header-cart-btn"
+                  data-cart-btn="true"
                   onClick={() => setIsCartOpen(true)}
-                  className="relative p-1.5 rounded-full transition-transform active:scale-95 cursor-pointer text-[#18231E] hover:text-[#123F32]"
+                  className="relative p-1.5 rounded-full transition-transform active:scale-95 cursor-pointer text-[#18181B] hover:text-[#B45309]"
                   aria-label={`Shopping basket with ${totalItems} items`}
                 >
-                  <ShoppingBag className="w-5 h-5 stroke-[2]" />
-                  <span className="absolute top-0 right-0 w-3.5 h-3.5 rounded-full bg-[#123F32] text-white text-[8.5px] font-bold flex items-center justify-center border border-white shadow-2xs">
-                    {totalItems > 0 ? totalItems : 3}
-                  </span>
+                  <ShoppingBag className="w-4.5 h-4.5 stroke-[2]" />
+                  <AnimatePresence mode="popLayout">
+                    {totalItems > 0 && (
+                      <motion.span
+                        key={`mobile-cart-${totalItems}`}
+                        variants={badgePopVariants}
+                        initial="initial"
+                        animate="animate"
+                        className="absolute top-0 right-0 w-3.5 h-3.5 rounded-full bg-[#18181B] text-[#F5D103] text-[8.5px] font-bold flex items-center justify-center border border-white shadow-2xs"
+                      >
+                        {totalItems}
+                      </motion.span>
+                    )}
+                  </AnimatePresence>
                 </button>
               </div>
 
               {/* Desktop Right Controls (Tablet & Up) */}
-              <div className="hidden md:flex items-center gap-2 sm:gap-3">
+              <div className="hidden md:flex items-center gap-1.5">
                 {/* Desktop Account Icon */}
                 <button
                   type="button"
-                  className="p-2 text-stone-700 hover:text-[#123F32] hover:bg-white/90 rounded-full transition-all hover:scale-110 active:scale-95 cursor-pointer"
-                  aria-label="User Account"
+                  onClick={onOpenAccountModal || goToAccount}
+                  className={`p-1.5 rounded-full transition-colors cursor-pointer active:scale-90 ${
+                    currentView === 'account'
+                      ? 'text-[#245E4A] bg-[#245E4A]/10 ring-1 ring-[#245E4A]/20'
+                      : 'text-stone-600 hover:text-[#B45309] hover:bg-stone-100/70'
+                  }`}
+                  aria-label="User Account Profile"
+                  title="My Account & Orders"
                 >
-                  <User className="w-4.5 h-4.5" />
+                  <User className="w-4 h-4" />
                 </button>
 
                 {/* Wishlist Icon */}
                 <button
                   type="button"
-                  onClick={onFilterWishlist}
-                  className={`relative p-2 rounded-full transition-all hover:scale-110 active:scale-95 cursor-pointer ${
-                    isWishlistFilterActive
+                  onClick={() => goToWishlist()}
+                  className={`relative p-1.5 rounded-full transition-colors cursor-pointer active:scale-90 ${
+                    currentView === 'wishlist'
                       ? 'text-rose-600 bg-rose-50'
-                      : 'text-stone-700 hover:text-[#123F32] hover:bg-white/90'
+                      : 'text-stone-600 hover:text-[#B45309] hover:bg-stone-100/70'
                   }`}
                   aria-label="Wishlist"
-                  title={
-                    isWishlistFilterActive
-                      ? 'Showing saved items (Click to clear)'
-                      : 'View Saved Wishlist'
-                  }
+                  title="View Saved Wishlist"
                 >
-                  <Heart className="w-4.5 h-4.5" />
-                  {wishlistCount > 0 && (
-                    <span className="absolute top-0.5 right-0.5 w-3.5 h-3.5 rounded-full bg-[#123F32] text-[#D6F36A] text-[9px] font-bold flex items-center justify-center border border-white">
-                      {wishlistCount}
-                    </span>
-                  )}
+                  <Heart className={`w-4 h-4 ${currentView === 'wishlist' ? 'fill-current' : ''}`} />
+                  <AnimatePresence mode="popLayout">
+                    {wishlistCount > 0 && (
+                      <motion.span
+                        key={`wishlist-badge-${wishlistCount}`}
+                        variants={badgePopVariants}
+                        initial="initial"
+                        animate="animate"
+                        className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-[#18181B] text-[#F5D103] text-[9px] font-bold flex items-center justify-center border border-white"
+                      >
+                        {wishlistCount}
+                      </motion.span>
+                    )}
+                  </AnimatePresence>
                 </button>
 
-                {/* Desktop Shopping Basket Pill Button */}
+                {/* Desktop Shopping Basket Button - Minimal Pill */}
                 <button
                   type="button"
+                  id="desktop-cart-btn"
+                  data-cart-btn="true"
                   onClick={() => setIsCartOpen(true)}
-                  className="btn-magnetic flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-full bg-[#123F32] text-white hover:bg-[#1B5746] transition-all shadow-xs hover:shadow-md cursor-pointer group"
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#F5D103] text-[#18181B] hover:bg-[#E5A800] active:scale-95 transition-all text-xs font-semibold shadow-2xs cursor-pointer group"
                   aria-label={`Shopping basket with ${totalItems} items`}
                 >
-                  <div className="relative">
-                    <ShoppingBag className="w-4 h-4 text-[#D6F36A] group-hover:scale-110 transition-transform" />
+                  <ShoppingBag className="w-3.5 h-3.5 text-[#18181B]" />
+                  <span className="font-bold">£{total.toFixed(2)}</span>
+                  <AnimatePresence mode="popLayout">
                     {totalItems > 0 && (
-                      <span className="absolute -top-1.5 -right-2 w-3.5 h-3.5 rounded-full bg-[#D6F36A] text-[#123F32] text-[9px] font-extrabold flex items-center justify-center">
+                      <motion.span
+                        key={`cart-pill-${totalItems}`}
+                        variants={badgePopVariants}
+                        initial="initial"
+                        animate="animate"
+                        className="w-4 h-4 rounded-full bg-[#18181B] text-[#F5D103] text-[9.5px] font-extrabold flex items-center justify-center -ml-0.5"
+                      >
                         {totalItems}
-                      </span>
+                      </motion.span>
                     )}
-                  </div>
-                  <span className="font-bold text-xs sm:text-sm tracking-tight">
-                    £{total.toFixed(2)}
-                  </span>
+                  </AnimatePresence>
                 </button>
 
-                {/* Tablet Hamburger Button (xl:hidden) */}
+                {/* Tablet Hamburger Button (lg:hidden) */}
                 <button
                   type="button"
                   onClick={() => {
                     setIsMobileMenuOpen(!isMobileMenuOpen);
                     if (isMobileSearchOpen) setIsMobileSearchOpen(false);
                   }}
-                  className="xl:hidden w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-stone-700 hover:text-[#123F32] hover:bg-black/5 transition-all cursor-pointer relative"
+                  className="lg:hidden w-8 h-8 rounded-full flex items-center justify-center text-stone-700 hover:text-[#B45309] hover:bg-black/5 transition-all cursor-pointer relative"
                   aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
                 >
                   <div
                     className={`transition-transform duration-300 transform ${
-                      isMobileMenuOpen ? 'rotate-90 scale-105 text-[#123F32]' : 'rotate-0'
+                      isMobileMenuOpen ? 'rotate-90 scale-105 text-[#18181B]' : 'rotate-0'
                     }`}
                   >
                     {isMobileMenuOpen ? (
-                      <X className="w-5 h-5 stroke-[2.4]" />
+                      <X className="w-4.5 h-4.5 stroke-[2.2]" />
                     ) : (
-                      <Menu className="w-5 h-5 stroke-[2.2]" />
+                      <Menu className="w-4.5 h-4.5 stroke-[2]" />
                     )}
                   </div>
                 </button>
@@ -447,15 +483,14 @@ export const Header: React.FC<HeaderProps> = ({
             isMobileSearchOpen ? 'max-h-24 opacity-100 px-4 pb-3' : 'max-h-0 opacity-0 px-4 pb-0 pointer-events-none'
           }`}
         >
-          <div className="relative">
+          <form onSubmit={handleSearchSubmit} className="relative">
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              onFocus={() => setIsSearchFocused(true)}
-              placeholder="Search produce, bakery, eggs..."
+              placeholder="Search produce, bakery, dairy..."
               aria-label="Search products"
-              className="w-full bg-white text-xs pl-9 pr-8 py-2.5 rounded-full border border-stone-200/90 focus:outline-none focus:ring-2 focus:ring-[#123F32]/15 focus:border-[#123F32] shadow-2xs"
+              className="w-full bg-white text-xs pl-9 pr-8 py-2.5 rounded-full border border-stone-200/90 focus:outline-none focus:ring-2 focus:ring-[#F5D103]/40 focus:border-[#F5D103] shadow-2xs"
             />
             <Search className="w-4 h-4 text-stone-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
             {searchQuery && (
@@ -468,14 +503,14 @@ export const Header: React.FC<HeaderProps> = ({
                 <X className="w-3.5 h-3.5" />
               </button>
             )}
-          </div>
+          </form>
         </div>
 
-        {/* Floating Mobile Navigation Card (Clean, modern iOS-style floating modal sheet) */}
+        {/* Floating Mobile Navigation Drawer */}
         <div
           className={`xl:hidden overflow-hidden transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
             isMobileMenuOpen
-              ? 'max-h-[460px] opacity-100 px-3 sm:px-4 pb-4'
+              ? 'max-h-[500px] opacity-100 px-3 sm:px-4 pb-4'
               : 'max-h-0 opacity-0 px-3 sm:px-4 pb-0 pointer-events-none'
           }`}
         >
@@ -483,21 +518,24 @@ export const Header: React.FC<HeaderProps> = ({
             {navLinks.map((link, idx) => {
               const Icon = link.icon;
               return (
-                <a
+                <button
                   key={link.label}
-                  href={link.href}
-                  onClick={() => setIsMobileMenuOpen(false)}
+                  type="button"
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    link.action();
+                  }}
                   style={{
                     transitionDelay: isMobileMenuOpen ? `${idx * 30}ms` : '0ms',
                   }}
-                  className={`flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-[#18231E] hover:text-[#123F32] hover:bg-[#F0F5EC] transition-all duration-200 group ${
+                  className={`flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-[#18181B] hover:text-[#B45309] hover:bg-[#F0F5EC] transition-all duration-200 group w-full text-left cursor-pointer ${
                     isMobileMenuOpen
                       ? 'translate-y-0 opacity-100'
                       : 'translate-y-2 opacity-0'
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <span className="w-8 h-8 rounded-xl bg-stone-100 flex items-center justify-center text-stone-600 group-hover:bg-[#123F32] group-hover:text-[#D6F36A] transition-colors">
+                    <span className="w-8 h-8 rounded-xl bg-stone-100 flex items-center justify-center text-stone-600 group-hover:bg-[#F5D103] group-hover:text-[#18181B] transition-colors">
                       <Icon className="w-4 h-4" />
                     </span>
                     <span className="font-semibold text-sm">{link.label}</span>
@@ -505,13 +543,13 @@ export const Header: React.FC<HeaderProps> = ({
 
                   <div className="flex items-center gap-2">
                     {link.badge && (
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-[#D6F36A] text-[#123F32]">
+                      <span className="px-1.5 py-0.5 rounded-md text-[10px] font-extrabold bg-[#F5D103] text-[#18181B]">
                         {link.badge}
                       </span>
                     )}
                     <ChevronRight className="w-4 h-4 text-stone-400 group-hover:translate-x-0.5 transition-transform" />
                   </div>
-                </a>
+                </button>
               );
             })}
 
@@ -523,22 +561,22 @@ export const Header: React.FC<HeaderProps> = ({
                   setIsMobileMenuOpen(false);
                   onOpenLocationModal();
                 }}
-                className="w-full flex items-center justify-between px-3.5 py-2 rounded-2xl bg-stone-50 hover:bg-[#F0F5EC] text-xs font-semibold text-[#18231E] transition-colors cursor-pointer"
+                className="w-full flex items-center justify-between px-3.5 py-2 rounded-2xl bg-stone-50 hover:bg-[#F0F5EC] text-xs font-semibold text-[#18181B] transition-colors cursor-pointer"
               >
                 <div className="flex items-center gap-2.5">
-                  <MapPin className="w-4 h-4 text-[#2F7654]" />
-                  <span>Deliver to: <strong className="text-[#123F32]">{selectedPostalCode}</strong></span>
+                  <MapPin className="w-4 h-4 text-[#B45309]" />
+                  <span>Deliver to: <strong className="text-[#18181B]">{selectedPostalCode}</strong></span>
                 </div>
-                <span className="text-[11px] font-bold text-[#2F7654] hover:underline">Change</span>
+                <span className="text-[11px] font-bold text-[#B45309] hover:underline">Change</span>
               </button>
             </div>
           </div>
         </div>
       </header>
 
-      {/* Gentle Click-Away Overlay (Non-blurry, subtle soft scrim) */}
+      {/* Click-Away Overlay */}
       <div
-        className={`fixed inset-0 top-16 sm:top-20 bg-black/15 z-30 xl:hidden transition-opacity duration-300 ${
+        className={`fixed inset-0 top-14 sm:top-16 bg-black/15 z-30 lg:hidden transition-opacity duration-300 ${
           isMobileMenuOpen || isMobileSearchOpen
             ? 'opacity-100 pointer-events-auto'
             : 'opacity-0 pointer-events-none'
@@ -551,3 +589,4 @@ export const Header: React.FC<HeaderProps> = ({
     </>
   );
 };
+

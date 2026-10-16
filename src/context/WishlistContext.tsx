@@ -4,17 +4,19 @@ interface WishlistContextType {
   wishlistIds: string[];
   toggleWishlist: (productId: string) => void;
   isInWishlist: (productId: string) => boolean;
+  clearWishlist: () => void;
   wishlistCount: number;
 }
 
 const WishlistContext = createContext<WishlistContextType | undefined>(undefined);
 
-const WISHLIST_STORAGE_KEY = 'varamstores_wishlist_v1';
+const WISHLIST_STORAGE_KEY = 'freshmart_wishlist_v1';
+const LEGACY_WISHLIST_KEY = 'varamstores_wishlist_v1';
 
 export const WishlistProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [wishlistIds, setWishlistIds] = useState<string[]>(() => {
     try {
-      const saved = localStorage.getItem(WISHLIST_STORAGE_KEY);
+      const saved = localStorage.getItem(WISHLIST_STORAGE_KEY) || localStorage.getItem(LEGACY_WISHLIST_KEY);
       return saved ? JSON.parse(saved) : [];
     } catch {
       return [];
@@ -37,6 +39,10 @@ export const WishlistProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     );
   };
 
+  const clearWishlist = () => {
+    setWishlistIds([]);
+  };
+
   const isInWishlist = (productId: string) => wishlistIds.includes(productId);
 
   return (
@@ -45,6 +51,7 @@ export const WishlistProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         wishlistIds,
         toggleWishlist,
         isInWishlist,
+        clearWishlist,
         wishlistCount: wishlistIds.length,
       }}
     >

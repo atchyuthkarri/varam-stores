@@ -1,8 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { CartProvider } from './context/CartContext';
 import { WishlistProvider } from './context/WishlistContext';
+import { NavigationProvider, useNavigation } from './context/NavigationContext';
+
+// Layout & Global Components
 import { AnnouncementBar } from './components/AnnouncementBar';
 import { Header } from './components/Header';
+import { Footer } from './components/Footer';
+import { MobileBottomNav } from './components/MobileBottomNav';
+import { CartDrawer } from './components/CartDrawer';
+import { LocationModal } from './components/LocationModal';
+import { ProductQuickViewModal } from './components/ProductQuickViewModal';
+import { CheckoutModal } from './components/CheckoutModal';
+import { AccountModal } from './components/AccountModal';
+import { Preloader } from './components/Preloader';
+import { ToastNotification } from './components/ToastNotification';
+import { AnimatePresence } from 'framer-motion';
+import { PageTransition } from './components/transitions/PageTransition';
+
+// Homepage Sections
 import { HeroSection } from './components/HeroSection';
 import { CategorySection } from './components/CategorySection';
 import { PromoCardsRow } from './components/PromoCardsRow';
@@ -11,106 +28,164 @@ import { BakeryDairySection } from './components/BakeryDairySection';
 import { FarmFreshBanner } from './components/FarmFreshBanner';
 import { MostSellingSection } from './components/MostSellingSection';
 import { PantrySuperfoodsSection } from './components/PantrySuperfoodsSection';
-import { AppPromotion } from './components/AppPromotion';
-import { TrustBar } from './components/TrustBar';
-import { Footer } from './components/Footer';
-import { CartDrawer } from './components/CartDrawer';
-import { LocationModal } from './components/LocationModal';
-import { ProductQuickViewModal } from './components/ProductQuickViewModal';
-import { CheckoutModal } from './components/CheckoutModal';
-import { ToastNotification } from './components/ToastNotification';
+import { WhyFreshMart } from './components/WhyFreshMart';
+import { BrandStory } from './components/BrandStory';
+import { TrustSection } from './components/TrustSection';
+
+// Full Pages
+import { ShopCataloguePage } from './components/ShopCataloguePage';
+import { ProductDetailPage } from './components/ProductDetailPage';
+import { WishlistPage } from './components/WishlistPage';
+import { UserAccountPage } from './components/UserAccountPage';
+
 import { useGsapScroll } from './hooks/useGsapScroll';
 import type { Product } from './types';
 
 export const AppContent: React.FC = () => {
   useGsapScroll();
-  const [selectedPostalCode, setSelectedPostalCode] =
-    useState('Hatfield, AL10');
-  const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
-  const [selectedProductForQuickView, setSelectedProductForQuickView] =
-    useState<Product | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [isWishlistFilterActive, setIsWishlistFilterActive] = useState(false);
-  const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
 
-  const handleSelectProduct = (product: Product) => {
+  const {
+    currentView,
+    selectedCategory,
+    selectedProductId,
+    goToShop,
+    goToProduct,
+    goToAccount,
+  } = useNavigation();
+
+  const [selectedPostalCode, setSelectedPostalCode] = useState('Hatfield, AL10');
+  const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
+  const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
+  const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
+  const [selectedProductForQuickView, setSelectedProductForQuickView] = useState<Product | null>(null);
+
+  // Keep scroll animations in sync whenever navigation view changes
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 150);
+    return () => clearTimeout(timer);
+  }, [currentView]);
+
+  const handleSelectProductQuickView = (product: Product) => {
     setSelectedProductForQuickView(product);
   };
 
-  const handleFilterWishlist = () => {
-    setIsWishlistFilterActive((prev) => !prev);
-    const el = document.getElementById('fresh-picks');
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  const handleSelectProductDirect = (product: Product) => {
+    goToProduct(product.id);
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F8F8F2] text-[#18231E] w-full overflow-x-hidden">
-      {/* 1. Announcement Bar */}
-      <AnnouncementBar />
+    <div className="min-h-screen flex flex-col bg-white text-[#18181B] w-full overflow-x-clip pb-14 md:pb-0">
+      {/* 0. Brand Preloader Screen */}
+      <Preloader />
 
-      {/* 2. Sticky Header */}
+      {/* 1. Global Fixed Full-Width Header */}
       <Header
         onOpenLocationModal={() => setIsLocationModalOpen(true)}
         selectedPostalCode={selectedPostalCode}
-        onSelectProduct={handleSelectProduct}
-        onFilterWishlist={handleFilterWishlist}
-        isWishlistFilterActive={isWishlistFilterActive}
+        onSelectProduct={handleSelectProductDirect}
+        onOpenAccountModal={() => goToAccount()}
       />
 
-      {/* Main Landing Page Content */}
-      <main className="flex-1">
-        {/* 3. Hero Section */}
-        <HeroSection />
+      {/* 2. Main View Router (Cleared below 56px/64px fixed header) with Fluid Page Transitions */}
+      <main className="flex-1 w-full pt-14 sm:pt-16">
+        <AnimatePresence mode="wait" initial={false}>
+          {/* VIEW A: HOMEPAGE (All 15 Complete Sections) */}
+          {currentView === 'home' && (
+            <PageTransition key="home">
+              <div className="w-full">
+                {/* Announcement Bar */}
+                <AnnouncementBar />
 
-        {/* 4. Shop by Category */}
-        <CategorySection
-          selectedCategory={selectedCategory}
-          onSelectCategory={(cat) => setSelectedCategory(cat)}
-        />
+                {/* 3. Hero Section */}
+                <HeroSection />
 
-        {/* 5. 3 Promo Cards Row */}
-        <PromoCardsRow />
+                {/* 4. Shop by Category Navigation: Everything You Need */}
+                <CategorySection
+                  selectedCategory={selectedCategory}
+                  onSelectCategory={(cat) => goToShop({ category: cat })}
+                />
 
-        {/* ========================================================================= */}
-        {/* FIRST SET: 2 PRODUCT SECTIONS */}
-        {/* ========================================================================= */}
-        {/* Product Section 1: Today's Fresh Picks */}
-        <ProductSection
-          onQuickView={handleSelectProduct}
-          isWishlistFilterActive={isWishlistFilterActive}
-          onClearWishlistFilter={() => setIsWishlistFilterActive(false)}
-        />
+                {/* 5. Featured Products: Today's Fresh Picks */}
+                <ProductSection
+                  onQuickView={handleSelectProductQuickView}
+                  isWishlistFilterActive={false}
+                  onClearWishlistFilter={() => {}}
+                />
 
-        {/* Product Section 2: Morning Bakery & Farm Dairy */}
-        <BakeryDairySection onQuickView={handleSelectProduct} />
+                {/* 6. Seasonal Bakery & Dairy Selection: Morning Bakery & Farm Dairy */}
+                <BakeryDairySection onQuickView={handleSelectProductQuickView} />
 
-        {/* ========================================================================= */}
-        {/* BANNER 1: Farm Fresh Fruits & Vegetables Banner */}
-        {/* ========================================================================= */}
-        <FarmFreshBanner />
+                {/* 7. Curated 3 Promo Cards Row */}
+                <PromoCardsRow />
 
-        {/* ========================================================================= */}
-        {/* SECOND SET: 2 PRODUCT SECTIONS */}
-        {/* ========================================================================= */}
-        {/* Product Section 3: Most Selling Products */}
-        <MostSellingSection onQuickView={handleSelectProduct} />
+                {/* 8. Farm Fresh Promotional Banner */}
+                <FarmFreshBanner />
 
-        {/* Product Section 4: Pantry Staples & Superfoods */}
-        <PantrySuperfoodsSection onQuickView={handleSelectProduct} />
+                {/* 10. Best Sellers: Most Selling Products */}
+                <MostSellingSection onQuickView={handleSelectProductQuickView} />
 
-        {/* ========================================================================= */}
-        {/* BANNER 2: Get the Varam stores App Banner */}
-        {/* ========================================================================= */}
-        <AppPromotion />
+                {/* 11. Pantry Superfoods & Seasonal Staples */}
+                <PantrySuperfoodsSection onQuickView={handleSelectProductQuickView} />
 
-        {/* 4 Brand Trust Features Bar */}
-        <TrustBar />
+                {/* 12. Why Choose FreshMart Promise */}
+                <WhyFreshMart />
+
+                {/* 13. Brand Story & Ethical Heritage */}
+                <BrandStory />
+
+                {/* 14. Customer Community & Quality Sourcing Guarantee */}
+                <TrustSection />
+              </div>
+            </PageTransition>
+          )}
+
+          {/* VIEW B: SHOP & CATALOGUE PAGE */}
+          {currentView === 'shop' && (
+            <PageTransition key="shop">
+              <ShopCataloguePage
+                onQuickView={handleSelectProductQuickView}
+                onSelectProduct={handleSelectProductDirect}
+              />
+            </PageTransition>
+          )}
+
+          {/* VIEW C: PRODUCT DETAIL PAGE */}
+          {currentView === 'product' && (
+            <PageTransition key={`product-${selectedProductId}`}>
+              <ProductDetailPage
+                productId={selectedProductId}
+                onQuickView={handleSelectProductQuickView}
+              />
+            </PageTransition>
+          )}
+
+          {/* VIEW D: SAVED WISHLIST PAGE */}
+          {currentView === 'wishlist' && (
+            <PageTransition key="wishlist">
+              <WishlistPage onQuickView={handleSelectProductQuickView} />
+            </PageTransition>
+          )}
+
+          {/* VIEW E: USER ACCOUNT & PROFILE ROUTE */}
+          {currentView === 'account' && (
+            <PageTransition key="account">
+              <UserAccountPage />
+            </PageTransition>
+          )}
+        </AnimatePresence>
       </main>
 
-      {/* Footer with Newsletter Subscription */}
-      <Footer />
+      {/* 4. Shared Footer */}
+      <div className={currentView === 'shop' ? 'w-full lg:pl-72 xl:pl-80 transition-all duration-200' : 'w-full'}>
+        <Footer />
+      </div>
 
-      {/* Interactive Cart Drawer, Location Modal, Quick View, and Checkout */}
+      {/* 5. Sticky Mobile Bottom Navigation Bar (Home, Shop, Wishlist, Basket) */}
+      <MobileBottomNav />
+
+      {/* 6. Global Modals & Drawers */}
       <CartDrawer onCheckout={() => setIsCheckoutModalOpen(true)} />
 
       <LocationModal
@@ -131,6 +206,12 @@ export const AppContent: React.FC = () => {
         postalCode={selectedPostalCode}
       />
 
+      <AccountModal
+        isOpen={isAccountModalOpen}
+        onClose={() => setIsAccountModalOpen(false)}
+        postalCode={selectedPostalCode}
+      />
+
       <ToastNotification />
     </div>
   );
@@ -140,7 +221,9 @@ export default function App() {
   return (
     <CartProvider>
       <WishlistProvider>
-        <AppContent />
+        <NavigationProvider>
+          <AppContent />
+        </NavigationProvider>
       </WishlistProvider>
     </CartProvider>
   );

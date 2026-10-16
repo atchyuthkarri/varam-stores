@@ -1,7 +1,7 @@
 export interface Product {
   id: string;
   name: string;
-  category: 'fruits' | 'vegetables' | 'dairy' | 'bakery' | 'meat' | 'pantry' | 'beverages';
+  category: string;
   categoryLabel: string;
   price: number;
   originalPrice?: number;
@@ -13,6 +13,10 @@ export interface Product {
   isOrganic?: boolean;
   origin?: string;
   description: string;
+  galleryImages?: string[];
+  inStock?: boolean;
+  storage?: string;
+  sourcing?: string;
   nutrition?: {
     calories: string;
     carbs: string;
@@ -31,6 +35,8 @@ export interface Category {
   badge?: string;
   accentColor?: string;
   cardBg?: string;
+  slug?: string;
+  subcategories?: string[];
 }
 
 export interface CartItem {

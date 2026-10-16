@@ -1,5 +1,4 @@
 import React from 'react';
-import { ArrowUpRight } from 'lucide-react';
 import type { Category } from '../types';
 
 interface CategoryCardProps {
@@ -14,83 +13,42 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
   onSelect,
 }) => {
   return (
-    <div className="gsap-category-card h-full">
+    <div className="gsap-category-card w-full min-w-0 flex flex-col items-center">
       <button
         type="button"
         onClick={() => onSelect(category.id)}
-        className={`group relative w-full h-full min-h-[260px] sm:min-h-[290px] rounded-[26px] sm:rounded-[30px] p-4 sm:p-5 flex flex-col justify-between text-left transition-all duration-400 ease-out cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#123F32] overflow-hidden bg-gradient-to-b ${
-          category.cardBg || 'from-[#F8F9F6] to-[#EFF2ED]'
-        } border ${
-          isSelected
-            ? 'border-[#123F32] shadow-xl ring-2 ring-[#123F32]/20 scale-[1.02] bg-white'
-            : 'border-black/[0.06] hover:border-black/15 hover:shadow-xl hover:shadow-black/8 hover:-translate-y-2'
-        }`}
+        className="group relative w-full flex flex-col items-center text-center p-1 sm:p-2 bg-transparent border-0 cursor-pointer focus:outline-none transition-all duration-300"
       >
-        {/* Subtle Ambient Radial Highlight */}
-        <div className="absolute -top-12 -right-12 w-32 h-32 rounded-full bg-white/60 blur-2xl pointer-events-none" />
+        {/* Transparent Product Image Cutout (Pure transparent background, zero card box) */}
+        <div className="relative w-full aspect-[4/3] max-h-36 sm:max-h-44 flex items-center justify-center">
+          <img
+            src={category.image}
+            alt={category.name}
+            className={`w-full h-full object-contain transition-transform duration-300 ease-out group-hover:scale-108 group-hover:-translate-y-1.5 ${
+              isSelected ? 'scale-105 -translate-y-1' : ''
+            }`}
+            loading="lazy"
+          />
+        </div>
 
-        {/* Top Bar: Badge & Action Arrow */}
-        <div className="relative z-10 w-full flex items-center justify-between gap-2">
-          {category.badge ? (
-            <span
-              className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-bold tracking-wide shadow-2xs backdrop-blur-md bg-white/80 border border-white/60"
-              style={{ color: category.accentColor || '#123F32' }}
-            >
-              {category.badge}
-            </span>
-          ) : (
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-bold text-[#556059] bg-white/80 border border-white/60">
-              {category.itemCount}
-            </span>
-          )}
-
-          <div
-            className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-all duration-300 shadow-2xs ${
+        {/* Category Label Directly Beneath Image */}
+        <div className="mt-2.5 sm:mt-3 flex flex-col items-center w-full px-1">
+          <span
+            className={`block text-center text-xs sm:text-[13px] md:text-sm font-bold tracking-tight transition-colors duration-200 ${
               isSelected
-                ? 'bg-[#123F32] text-white rotate-45'
-                : 'bg-white/90 text-[#18231E] border border-black/5 group-hover:bg-[#123F32] group-hover:text-white group-hover:rotate-45 group-hover:border-transparent'
+                ? 'text-[#EA580C]'
+                : 'text-[#18181B] group-hover:text-[#EA580C]'
             }`}
           >
-            <ArrowUpRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[2.5]" />
-          </div>
-        </div>
+            {category.name}
+          </span>
 
-        {/* Center: Produce Hero Stage */}
-        <div className="relative z-10 my-auto py-2 flex items-center justify-center">
-          {/* Soft Organic White Stage Disk */}
-          <div className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-full bg-white/85 shadow-xs border border-white flex items-center justify-center p-2 group-hover:scale-105 group-hover:shadow-md transition-all duration-400 ease-out">
-            <img
-              src={category.image}
-              alt={category.name}
-              className="w-full h-full object-cover rounded-full group-hover:scale-110 group-hover:-translate-y-1 transition-transform duration-500 ease-out drop-shadow-sm"
-              loading="lazy"
-            />
-          </div>
-        </div>
-
-        {/* Bottom: Title, Tagline & Item Count */}
-        <div className="relative z-10 w-full pt-1">
-          <div className="flex items-center justify-between gap-1 mb-0.5">
-            <h3 className="font-serif-heading font-bold text-[15px] sm:text-[17px] text-[#18231E] group-hover:text-[#123F32] transition-colors leading-tight">
-              {category.name}
-            </h3>
-          </div>
-          
-          <div className="flex items-center justify-between gap-2 mt-1">
-            <span className="text-[11px] sm:text-xs text-[#556059] font-medium truncate">
-              {category.tagline || category.itemCount}
-            </span>
-            <span className="text-[10px] sm:text-[11px] font-bold text-[#123F32] opacity-80 shrink-0">
-              {category.itemCount}
-            </span>
-          </div>
-
-          {/* Interactive Progress / Accent Line on Hover */}
+          {/* Underline Indicator on Active/Hover */}
           <div
-            className={`h-0.5 rounded-full mt-2.5 transition-all duration-300 ${
+            className={`h-0.5 rounded-full mt-1.5 transition-all duration-300 ${
               isSelected
-                ? 'w-full bg-[#123F32]'
-                : 'w-6 bg-black/10 group-hover:w-full group-hover:bg-[#123F32]'
+                ? 'w-6 bg-[#EA580C]'
+                : 'w-0 group-hover:w-5 bg-[#EA580C]/80'
             }`}
           />
         </div>

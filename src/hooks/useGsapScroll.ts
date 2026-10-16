@@ -169,24 +169,6 @@ export const useGsapScroll = () => {
         }
       });
 
-      // --- App Promotion Banner Reveal ---
-      const appCards = gsap.utils.toArray<HTMLElement>('#app-section .gsap-app-card');
-      if (appCards.length > 0) {
-        gsap.from(appCards, {
-          opacity: 0,
-          y: 35,
-          scale: 0.98,
-          duration: 0.8,
-          ease: 'power3.out',
-          clearProps: 'opacity,transform',
-          scrollTrigger: {
-            trigger: '#app-section',
-            start: 'top 85%',
-            toggleActions: 'play none none reverse',
-          },
-        });
-      }
-
       // --- Trust Bar Reveal ---
       const trustItems = gsap.utils.toArray<HTMLElement>('.gsap-trust-item');
       if (trustItems.length > 0) {
@@ -199,7 +181,8 @@ export const useGsapScroll = () => {
           scrollTrigger: {
             trigger: '.gsap-trust-bar',
             start: 'top 90%',
-            toggleActions: 'play none none reverse',
+            toggleActions: 'play none none none',
+            once: true,
           },
         });
       }
@@ -219,7 +202,8 @@ export const useGsapScroll = () => {
             scrollTrigger: {
               trigger: storySection,
               start: 'top 85%',
-              toggleActions: 'play none none reverse',
+              toggleActions: 'play none none none',
+              once: true,
             },
           });
         }
@@ -234,26 +218,11 @@ export const useGsapScroll = () => {
             scrollTrigger: {
               trigger: storySection,
               start: 'top 85%',
-              toggleActions: 'play none none reverse',
+              toggleActions: 'play none none none',
+              once: true,
             },
           });
         }
-      }
-
-      // --- Footer Newsletter Banner Reveal ---
-      const footerBanner = document.querySelector('.gsap-footer-banner');
-      if (footerBanner) {
-        gsap.from(footerBanner, {
-          opacity: 0,
-          y: 40,
-          duration: 0.8,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: footerBanner,
-            start: 'top 92%',
-            toggleActions: 'play none none reverse',
-          },
-        });
       }
 
       // --- Generic Section Headings Reveal ---
@@ -267,7 +236,8 @@ export const useGsapScroll = () => {
           scrollTrigger: {
             trigger: header,
             start: 'top 90%',
-            toggleActions: 'play none none reverse',
+            toggleActions: 'play none none none',
+            once: true,
           },
         });
       });

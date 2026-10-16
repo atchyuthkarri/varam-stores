@@ -1,20 +1,37 @@
 import React from 'react';
 import { CheckCircle } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../context/CartContext';
+import { toastVariants } from '../motion/variants';
 
 export const ToastNotification: React.FC = () => {
   const { toastMessage } = useCart();
 
-  if (!toastMessage) return null;
-
   return (
-    <div className="fixed bottom-6 right-6 z-50 animate-bounce">
-      <div className="bg-[#123F32] text-white px-5 py-3 rounded-2xl shadow-2xl border border-[#2F7654] flex items-center gap-3">
-        <div className="w-6 h-6 rounded-full bg-[#D6F36A] text-[#123F32] flex items-center justify-center flex-shrink-0">
-          <CheckCircle className="w-4 h-4 fill-current" />
-        </div>
-        <p className="text-xs sm:text-sm font-semibold">{toastMessage}</p>
-      </div>
-    </div>
+    <AnimatePresence>
+      {toastMessage && (
+        <aside
+          aria-live="polite"
+          aria-atomic="true"
+          className="fixed bottom-6 right-6 z-50 pointer-events-none"
+        >
+          <motion.div
+            variants={toastVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            className="bg-[#18181B] text-white px-5 py-3.5 rounded-2xl shadow-2xl border border-[#F5D103]/30 flex items-center gap-3 max-w-sm pointer-events-auto"
+            role="status"
+          >
+            <div className="w-6 h-6 rounded-full bg-[#F5D103] text-[#18181B] flex items-center justify-center shrink-0 shadow-xs">
+              <CheckCircle className="w-4 h-4 fill-current" />
+            </div>
+            <p className="text-xs sm:text-sm font-semibold tracking-wide text-stone-100">
+              {toastMessage}
+            </p>
+          </motion.div>
+        </aside>
+      )}
+    </AnimatePresence>
   );
 };
