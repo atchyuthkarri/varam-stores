@@ -10,6 +10,7 @@ import {
   ChevronRight,
   BookOpen,
   Tag,
+  Sparkles,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { VideoModal } from './VideoModal';
@@ -174,22 +175,22 @@ export const HeroSection: React.FC = () => {
               transition={{ duration: 0.35, ease: 'easeOut' }}
               className="w-full"
             >
-              {/* Clean Editorial Eyebrow */}
-              <div className="inline-flex items-center gap-1.5 text-[11px] font-bold tracking-wider uppercase text-[#245E4A] mb-2.5">
-                <Leaf className="w-3.5 h-3.5 fill-[#245E4A]" />
+              {/* Modern & Bold Eyebrow Badge */}
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F5D103]/20 text-[#18181B] border border-[#F5D103]/40 text-[11px] font-bold tracking-wider uppercase mb-3">
+                <Sparkles className="w-3 h-3 text-[#B45309] fill-[#F5D103]" />
                 <span>{activeSlide.badge}</span>
               </div>
 
-              {/* Large Editorial Headline */}
-              <h1 className="font-serif-heading text-4xl sm:text-5xl font-medium text-[#18231E] leading-[1.04] tracking-tight mb-3">
-                <span className="block font-medium">{activeSlide.titleRegular}</span>
-                <span className="block italic font-normal text-[#245E4A] font-im-fell">
+              {/* Large Modern Headline */}
+              <h1 className="text-3xl sm:text-4xl font-extrabold text-[#18181B] leading-[1.08] tracking-tight mb-3">
+                <span className="block">{activeSlide.titleRegular}</span>
+                <span className="block text-[#18181B]">
                   {activeSlide.titleItalicLine1} {activeSlide.titleItalicLine2}
                 </span>
               </h1>
 
               {/* Supporting Description */}
-              <p className="text-xs sm:text-sm text-[#556059] leading-relaxed mb-5 max-w-sm font-normal">
+              <p className="text-xs sm:text-sm text-stone-600 leading-relaxed mb-5 max-w-sm font-normal">
                 {activeSlide.description}
               </p>
 
@@ -215,7 +216,7 @@ export const HeroSection: React.FC = () => {
                       <Play className="w-2.5 h-2.5 fill-current ml-0.5" />
                     </div>
                   ) : activeSlide.secondaryAction === 'story' ? (
-                    <div className="w-5 h-5 rounded-full bg-[#245E4A]/15 text-[#245E4A] flex items-center justify-center">
+                    <div className="w-5 h-5 rounded-full bg-[#F5D103]/20 text-[#18181B] flex items-center justify-center">
                       <BookOpen className="w-2.5 h-2.5" />
                     </div>
                   ) : (
@@ -259,22 +260,22 @@ export const HeroSection: React.FC = () => {
           {/* 4 Mobile Trust Indicators Grid */}
           <div className="w-full bg-white rounded-2xl border border-stone-200/80 p-3 shadow-2xs grid grid-cols-4 divide-x divide-stone-100 text-center">
             <div className="flex flex-col items-center px-1">
-              <Truck className="w-4 h-4 text-[#245E4A] mb-1" />
+              <Truck className="w-4 h-4 text-[#B45309] mb-1" />
               <span className="text-[10px] font-bold text-[#18181B] leading-tight">Same-day</span>
               <span className="text-[8.5px] text-[#737A72]">Delivery</span>
             </div>
             <div className="flex flex-col items-center px-1">
-              <Leaf className="w-4 h-4 text-[#245E4A] mb-1" />
+              <Leaf className="w-4 h-4 text-[#B45309] mb-1" />
               <span className="text-[10px] font-bold text-[#18181B] leading-tight">100%</span>
               <span className="text-[8.5px] text-[#737A72]">Organic</span>
             </div>
             <div className="flex flex-col items-center px-1">
-              <Layers className="w-4 h-4 text-[#245E4A] mb-1" />
+              <Layers className="w-4 h-4 text-[#B45309] mb-1" />
               <span className="text-[10px] font-bold text-[#18181B] leading-tight">10k+</span>
               <span className="text-[8.5px] text-[#737A72]">Products</span>
             </div>
             <div className="flex flex-col items-center px-1">
-              <ShieldCheck className="w-4 h-4 text-[#245E4A] mb-1" />
+              <ShieldCheck className="w-4 h-4 text-[#B45309] mb-1" />
               <span className="text-[10px] font-bold text-[#18181B] leading-tight">Quality</span>
               <span className="text-[8.5px] text-[#737A72]">Guaranteed</span>
             </div>
@@ -288,7 +289,7 @@ export const HeroSection: React.FC = () => {
       <section
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
-        className="hidden md:flex relative w-full h-[calc(100vh-80px)] min-h-[620px] max-h-[840px] lg:min-h-[680px] lg:max-h-[880px] flex-col justify-between overflow-hidden bg-white select-none group/hero"
+        className="hidden md:flex relative w-full h-[calc(100vh-80px)] min-h-[620px] max-h-[840px] lg:min-h-[680px] lg:max-h-[880px] flex-col overflow-hidden bg-white select-none group/hero"
       >
         {/* Carousel Background Crossfade Layers */}
         <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
@@ -334,9 +335,9 @@ export const HeroSection: React.FC = () => {
           <ChevronRight className="w-5 h-5" />
         </button>
 
-        {/* Content container */}
-        <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12 relative z-10 pt-8 lg:pt-14 flex-1 flex flex-col justify-between">
-          <div className="w-full">
+        {/* Main Hero Content Area - Mathematically Vertically Centered */}
+        <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12 relative z-10 flex-1 flex items-center">
+          <div className="w-full pl-12 lg:pl-16 xl:pl-20">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeSlide.id}
@@ -346,27 +347,22 @@ export const HeroSection: React.FC = () => {
                 transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
                 className="max-w-md lg:max-w-xl flex flex-col items-start"
               >
-                {/* Clean Editorial Eyebrow */}
-                <div className="inline-flex items-center gap-2 text-xs font-bold tracking-[0.16em] uppercase text-[#245E4A] mb-3">
-                  <Leaf className="w-3.5 h-3.5 fill-[#245E4A]" />
+                {/* Modern & Bold Eyebrow Badge */}
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#F5D103]/20 text-[#18181B] border border-[#F5D103]/40 text-xs font-bold tracking-wider uppercase mb-4 shadow-2xs">
+                  <Sparkles className="w-3.5 h-3.5 text-[#B45309] fill-[#F5D103]" />
                   <span>{activeSlide.badge}</span>
                 </div>
 
-                {/* Main Headline: Sophisticated Editorial Serif */}
-                <h1 className="font-serif-heading text-5xl sm:text-6xl lg:text-[76px] xl:text-[80px] leading-[0.98] tracking-[-0.025em] text-[#18231E] mb-5">
-                  <span className="block font-medium text-[#18231E]">{activeSlide.titleRegular}</span>
-                  <span className="block italic font-normal text-[#245E4A] font-im-fell">
-                    {activeSlide.titleItalicLine1}
+                {/* Main Headline: Modern & Bold Dark Charcoal */}
+                <h1 className="text-5xl sm:text-6xl lg:text-[72px] xl:text-[78px] font-extrabold tracking-tight text-[#18181B] leading-[1.02] mb-5">
+                  <span className="block">{activeSlide.titleRegular}</span>
+                  <span className="block text-[#18181B]">
+                    {activeSlide.titleItalicLine1} {activeSlide.titleItalicLine2}
                   </span>
-                  {activeSlide.titleItalicLine2 && (
-                    <span className="block italic font-normal text-[#245E4A] font-im-fell">
-                      {activeSlide.titleItalicLine2}
-                    </span>
-                  )}
                 </h1>
 
                 {/* Subtitle */}
-                <p className="text-sm lg:text-base text-[#556059] leading-relaxed mb-7 font-normal max-w-md">
+                <p className="text-sm lg:text-base text-stone-600 leading-relaxed mb-7 font-normal max-w-md">
                   {activeSlide.description}
                 </p>
 
@@ -384,18 +380,18 @@ export const HeroSection: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => handleSecondaryClick(activeSlide.secondaryAction)}
-                    className="inline-flex items-center gap-2.5 text-sm font-bold text-[#18231E] hover:text-[#245E4A] cursor-pointer group transition-colors py-1"
+                    className="inline-flex items-center gap-2.5 text-sm font-bold text-[#18181B] hover:text-[#B45309] cursor-pointer group transition-colors py-1"
                   >
                     {activeSlide.secondaryAction === 'video' ? (
-                      <div className="w-8 h-8 rounded-full bg-white shadow-sm border border-black/5 flex items-center justify-center text-[#18181B] group-hover:scale-108 transition-all">
+                      <div className="w-8 h-8 rounded-full bg-white shadow-sm border border-stone-200/80 flex items-center justify-center text-[#18181B] group-hover:scale-108 transition-all">
                         <Play className="w-3 h-3 fill-[#18181B] ml-0.5 text-[#18181B]" />
                       </div>
                     ) : activeSlide.secondaryAction === 'story' ? (
-                      <div className="w-8 h-8 rounded-full bg-white shadow-sm border border-black/5 flex items-center justify-center text-[#245E4A] group-hover:scale-108 transition-all">
+                      <div className="w-8 h-8 rounded-full bg-white shadow-sm border border-stone-200/80 flex items-center justify-center text-[#18181B] group-hover:scale-108 transition-all">
                         <BookOpen className="w-3.5 h-3.5" />
                       </div>
                     ) : (
-                      <div className="w-8 h-8 rounded-full bg-white shadow-sm border border-black/5 flex items-center justify-center text-[#245E4A] group-hover:scale-108 transition-all">
+                      <div className="w-8 h-8 rounded-full bg-white shadow-sm border border-stone-200/80 flex items-center justify-center text-[#18181B] group-hover:scale-108 transition-all">
                         <Tag className="w-3.5 h-3.5" />
                       </div>
                     )}
@@ -405,62 +401,62 @@ export const HeroSection: React.FC = () => {
               </motion.div>
             </AnimatePresence>
           </div>
+        </div>
 
-          {/* Bottom Trust Cards & Carousel Pill Dots */}
-          <div className="w-full mt-auto pb-4">
-            {/* Interactive Carousel Indicators */}
-            <div className="flex items-center justify-center gap-2 mb-3.5">
-              {SLIDES.map((slide, idx) => {
-                const isActive = idx === currentSlide;
-                return (
-                  <button
-                    key={slide.id}
-                    type="button"
-                    onClick={() => goToIndex(idx)}
-                    className={`relative rounded-full transition-all duration-300 cursor-pointer overflow-hidden ${isActive
-                        ? 'w-8 h-2 bg-[#18181B] shadow-sm'
-                        : 'w-2 h-2 bg-stone-300 hover:bg-stone-500'
-                      }`}
-                    aria-label={`Go to slide ${idx + 1}`}
-                  >
-                    {/* Animated Progress Fill on Active Pill */}
-                    {isActive && !isPaused && (
-                      <motion.span
-                        key={`progress-${idx}`}
-                        initial={{ width: '0%' }}
-                        animate={{ width: '100%' }}
-                        transition={{ duration: AUTOPLAY_DURATION / 1000, ease: 'linear' }}
-                        className="absolute inset-y-0 left-0 bg-[#F5D103] rounded-full"
-                      />
-                    )}
-                  </button>
-                );
-              })}
-            </div>
+        {/* Bottom Trust Cards & Carousel Pill Dots */}
+        <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12 relative z-10 pb-4 shrink-0">
+          {/* Interactive Carousel Indicators */}
+          <div className="flex items-center justify-center gap-2 mb-3.5">
+            {SLIDES.map((slide, idx) => {
+              const isActive = idx === currentSlide;
+              return (
+                <button
+                  key={slide.id}
+                  type="button"
+                  onClick={() => goToIndex(idx)}
+                  className={`relative rounded-full transition-all duration-300 cursor-pointer overflow-hidden ${isActive
+                      ? 'w-8 h-2 bg-[#18181B] shadow-sm'
+                      : 'w-2 h-2 bg-stone-300 hover:bg-stone-500'
+                    }`}
+                  aria-label={`Go to slide ${idx + 1}`}
+                >
+                  {/* Animated Progress Fill on Active Pill */}
+                  {isActive && !isPaused && (
+                    <motion.span
+                      key={`progress-${idx}`}
+                      initial={{ width: '0%' }}
+                      animate={{ width: '100%' }}
+                      transition={{ duration: AUTOPLAY_DURATION / 1000, ease: 'linear' }}
+                      className="absolute inset-y-0 left-0 bg-[#F5D103] rounded-full"
+                    />
+                  )}
+                </button>
+              );
+            })}
+          </div>
 
-            {/* Trust Cards Grid */}
-            <div className="w-full bg-white/95 backdrop-blur-md rounded-3xl shadow-xl border border-black/[0.06] p-4">
-              <div className="grid grid-cols-4 divide-x divide-stone-200/80">
-                <div className="flex flex-col items-center text-center px-2">
-                  <Truck className="w-5 h-5 text-[#245E4A] mb-1.5 stroke-[1.8]" />
-                  <p className="text-xs font-bold text-[#18181B] leading-tight">Same-day</p>
-                  <p className="text-[10.5px] text-[#737A72] leading-tight mt-0.5">Delivery</p>
-                </div>
-                <div className="flex flex-col items-center text-center px-2">
-                  <Leaf className="w-5 h-5 text-[#245E4A] mb-1.5 stroke-[1.8]" />
-                  <p className="text-xs font-bold text-[#18181B] leading-tight">100%</p>
-                  <p className="text-[10.5px] text-[#737A72] leading-tight mt-0.5">Fresh Produce</p>
-                </div>
-                <div className="flex flex-col items-center text-center px-2">
-                  <Layers className="w-5 h-5 text-[#245E4A] mb-1.5 stroke-[1.8]" />
-                  <p className="text-xs font-bold text-[#18181B] leading-tight">Wide</p>
-                  <p className="text-[10.5px] text-[#737A72] leading-tight mt-0.5">Selection</p>
-                </div>
-                <div className="flex flex-col items-center text-center px-2">
-                  <ShieldCheck className="w-5 h-5 text-[#245E4A] mb-1.5 stroke-[1.8]" />
-                  <p className="text-xs font-bold text-[#18181B] leading-tight">Quality</p>
-                  <p className="text-[10.5px] text-[#737A72] leading-tight mt-0.5">Guaranteed</p>
-                </div>
+          {/* Trust Cards Grid */}
+          <div className="w-full bg-white/95 backdrop-blur-md rounded-3xl shadow-xl border border-black/[0.06] p-4">
+            <div className="grid grid-cols-4 divide-x divide-stone-200/80">
+              <div className="flex flex-col items-center text-center px-2">
+                <Truck className="w-5 h-5 text-[#B45309] mb-1.5 stroke-[1.8]" />
+                <p className="text-xs font-bold text-[#18181B] leading-tight">Same-day</p>
+                <p className="text-[10.5px] text-[#737A72] leading-tight mt-0.5">Delivery</p>
+              </div>
+              <div className="flex flex-col items-center text-center px-2">
+                <Leaf className="w-5 h-5 text-[#B45309] mb-1.5 stroke-[1.8]" />
+                <p className="text-xs font-bold text-[#18181B] leading-tight">100%</p>
+                <p className="text-[10.5px] text-[#737A72] leading-tight mt-0.5">Fresh Produce</p>
+              </div>
+              <div className="flex flex-col items-center text-center px-2">
+                <Layers className="w-5 h-5 text-[#B45309] mb-1.5 stroke-[1.8]" />
+                <p className="text-xs font-bold text-[#18181B] leading-tight">Wide</p>
+                <p className="text-[10.5px] text-[#737A72] leading-tight mt-0.5">Selection</p>
+              </div>
+              <div className="flex flex-col items-center text-center px-2">
+                <ShieldCheck className="w-5 h-5 text-[#B45309] mb-1.5 stroke-[1.8]" />
+                <p className="text-xs font-bold text-[#18181B] leading-tight">Quality</p>
+                <p className="text-[10.5px] text-[#737A72] leading-tight mt-0.5">Guaranteed</p>
               </div>
             </div>
           </div>
