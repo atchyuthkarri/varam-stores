@@ -114,7 +114,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
     <div className="w-full bg-white min-h-screen pb-24 animate-fadeIn">
       {/* 1. Breadcrumb Bar */}
       <div className="border-b border-stone-200/80 bg-white py-3.5 px-4 sm:px-6 lg:px-10">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
+        <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12 flex items-center justify-between">
           <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-[#737A72] truncate">
             <button
               type="button"
@@ -157,7 +157,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
       </div>
 
       {/* 2. Main Product Showcase */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 pt-8 sm:pt-12">
+      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12 pt-8 sm:pt-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
           {/* Left Column: Image Gallery (lg:col-span-6) */}
           <div className="lg:col-span-6 flex flex-col gap-4">

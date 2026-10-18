@@ -16,7 +16,7 @@ export const MostSellingSection: React.FC<MostSellingSectionProps> = ({
 
   return (
     <section id="most-selling" className="py-8 sm:py-12 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12">
         {/* Section Header */}
         <div className="gsap-section-header flex items-center justify-between mb-6">
           <h2 className="font-sans font-extrabold text-2xl sm:text-3xl text-[#18181B] tracking-tight">

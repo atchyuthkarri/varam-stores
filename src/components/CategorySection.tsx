@@ -17,7 +17,7 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
 
   return (
     <section id="categories" className="py-12 sm:py-16 md:py-20 bg-white border-y border-stone-100 relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12 relative z-10">
         {/* ========================================================================= */}
         {/* SECTION HEADER (EXACT LAKSHMI STORES REFERENCE STYLE) */}
         {/* ========================================================================= */}

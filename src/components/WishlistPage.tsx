@@ -29,7 +29,7 @@ export const WishlistPage: React.FC<WishlistPageProps> = ({ onQuickView }) => {
     <div className="w-full bg-white min-h-screen pb-24 animate-fadeIn">
       {/* Breadcrumb Header */}
       <section className="bg-white border-b border-stone-200/80 py-8 sm:py-12 px-4 sm:px-6 lg:px-10">
-        <div className="max-w-7xl mx-auto">
+        <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12">
           <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-[#737A72] mb-3">
             <button
               type="button"
@@ -77,7 +77,7 @@ export const WishlistPage: React.FC<WishlistPageProps> = ({ onQuickView }) => {
       </section>
 
       {/* Main Grid or Empty State */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 pt-8 sm:pt-12">
+      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12 pt-8 sm:pt-12">
         {favoritedProducts.length === 0 ? (
           <div className="bg-white rounded-3xl border border-stone-200/80 p-8 sm:p-16 text-center max-w-lg mx-auto shadow-xs">
             <div className="w-16 h-16 rounded-full bg-rose-50 text-rose-500 flex items-center justify-center mx-auto mb-4">

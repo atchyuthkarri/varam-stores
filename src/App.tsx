@@ -21,6 +21,7 @@ import { PageTransition } from './components/transitions/PageTransition';
 
 // Homepage Sections
 import { HeroSection } from './components/HeroSection';
+import { BrandMarquee } from './components/BrandMarquee';
 import { CategorySection } from './components/CategorySection';
 import { PromoCardsRow } from './components/PromoCardsRow';
 import { ProductSection } from './components/ProductSection';
@@ -37,6 +38,8 @@ import { ShopCataloguePage } from './components/ShopCataloguePage';
 import { ProductDetailPage } from './components/ProductDetailPage';
 import { WishlistPage } from './components/WishlistPage';
 import { UserAccountPage } from './components/UserAccountPage';
+import { OurStoryPage } from './components/OurStoryPage';
+import { AdminPortalPage } from './components/AdminPortalPage';
 
 import { useGsapScroll } from './hooks/useGsapScroll';
 import type { Product } from './types';
@@ -59,11 +62,13 @@ export const AppContent: React.FC = () => {
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
   const [selectedProductForQuickView, setSelectedProductForQuickView] = useState<Product | null>(null);
 
-  // Keep scroll animations in sync whenever navigation view changes
+  // Always scroll to top immediately whenever navigation view changes, then refresh ScrollTrigger
   useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
     const timer = setTimeout(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
       ScrollTrigger.refresh();
-    }, 150);
+    }, 50);
     return () => clearTimeout(timer);
   }, [currentView]);
 
@@ -75,21 +80,25 @@ export const AppContent: React.FC = () => {
     goToProduct(product.id);
   };
 
+  const isAdmin = currentView === 'admin';
+
   return (
-    <div className="min-h-screen flex flex-col bg-white text-[#18181B] w-full overflow-x-clip pb-14 md:pb-0">
+    <div className={`min-h-screen flex flex-col bg-white text-[#18181B] w-full overflow-x-clip ${isAdmin ? '' : 'pb-14 md:pb-0'}`}>
       {/* 0. Brand Preloader Screen */}
       <Preloader />
 
-      {/* 1. Global Fixed Full-Width Header */}
-      <Header
-        onOpenLocationModal={() => setIsLocationModalOpen(true)}
-        selectedPostalCode={selectedPostalCode}
-        onSelectProduct={handleSelectProductDirect}
-        onOpenAccountModal={() => goToAccount()}
-      />
+      {/* 1. Global Fixed Full-Width Header (Hidden in Admin Portal Workspace) */}
+      {!isAdmin && (
+        <Header
+          onOpenLocationModal={() => setIsLocationModalOpen(true)}
+          selectedPostalCode={selectedPostalCode}
+          onSelectProduct={handleSelectProductDirect}
+          onOpenAccountModal={() => goToAccount()}
+        />
+      )}
 
       {/* 2. Main View Router (Cleared below 56px/64px fixed header) with Fluid Page Transitions */}
-      <main className="flex-1 w-full pt-14 sm:pt-16">
+      <main className={isAdmin ? 'flex-1 w-full bg-[#F8FAFC]' : 'flex-1 w-full pt-14 sm:pt-16'}>
         <AnimatePresence mode="wait" initial={false}>
           {/* VIEW A: HOMEPAGE (All 15 Complete Sections) */}
           {currentView === 'home' && (
@@ -101,6 +110,9 @@ export const AppContent: React.FC = () => {
                 {/* 3. Hero Section */}
                 <HeroSection />
 
+                {/* 3.5 Authentic Brands Marquee */}
+                <BrandMarquee />
+
                 {/* 4. Shop by Category Navigation: Everything You Need */}
                 <CategorySection
                   selectedCategory={selectedCategory}
@@ -111,7 +123,7 @@ export const AppContent: React.FC = () => {
                 <ProductSection
                   onQuickView={handleSelectProductQuickView}
                   isWishlistFilterActive={false}
-                  onClearWishlistFilter={() => {}}
+                  onClearWishlistFilter={() => { }}
                 />
 
                 {/* 6. Seasonal Bakery & Dairy Selection: Morning Bakery & Farm Dairy */}
@@ -174,16 +186,32 @@ export const AppContent: React.FC = () => {
               <UserAccountPage />
             </PageTransition>
           )}
+
+          {/* VIEW F: DEDICATED OUR STORY PAGE */}
+          {currentView === 'story' && (
+            <PageTransition key="story">
+              <OurStoryPage />
+            </PageTransition>
+          )}
+
+          {/* VIEW G: CENTRAL STORE OPERATIONS & ADMIN PORTAL */}
+          {currentView === 'admin' && (
+            <PageTransition key="admin">
+              <AdminPortalPage />
+            </PageTransition>
+          )}
         </AnimatePresence>
       </main>
 
-      {/* 4. Shared Footer */}
-      <div className={currentView === 'shop' ? 'w-full lg:pl-72 xl:pl-80 transition-all duration-200' : 'w-full'}>
-        <Footer />
-      </div>
+      {/* 4. Shared Footer (Hidden in Admin Portal Workspace) */}
+      {!isAdmin && (
+        <div className={currentView === 'shop' ? 'w-full lg:pl-72 xl:pl-80 transition-all duration-200' : 'w-full'}>
+          <Footer />
+        </div>
+      )}
 
-      {/* 5. Sticky Mobile Bottom Navigation Bar (Home, Shop, Wishlist, Basket) */}
-      <MobileBottomNav />
+      {/* 5. Sticky Mobile Bottom Navigation Bar (Hidden in Admin Portal Workspace) */}
+      {!isAdmin && <MobileBottomNav />}
 
       {/* 6. Global Modals & Drawers */}
       <CartDrawer onCheckout={() => setIsCheckoutModalOpen(true)} />

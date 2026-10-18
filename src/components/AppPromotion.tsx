@@ -65,7 +65,7 @@ export const AppPromotion: React.FC = () => {
       id="app-section"
       className="py-12 sm:py-16 lg:py-20 bg-[#F8F9FA] relative select-none overflow-hidden"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12">
         {/* ========================================================================= */}
         {/* MASTER VECTOR BANNER — 100% Crisp Native Typography & Interactive Mockups */}
         {/* ========================================================================= */}

@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { getLenis } from '../hooks/useGsapScroll';
 
-export type PageView = 'home' | 'shop' | 'product' | 'wishlist' | 'account';
+export type PageView = 'home' | 'shop' | 'product' | 'wishlist' | 'account' | 'story' | 'admin';
 
 interface NavigationContextType {
   currentView: PageView;
@@ -24,6 +23,8 @@ interface NavigationContextType {
   goToProduct: (productId: string) => void;
   goToWishlist: () => void;
   goToAccount: () => void;
+  goToStory: () => void;
+  goToAdmin: () => void;
   scrollToSection: (sectionId: string) => void;
   setSelectedCategory: (cat: string) => void;
   setSearchQuery: (q: string) => void;
@@ -59,6 +60,10 @@ export const NavigationProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       initialView = 'shop';
     } else if (pageParam === 'wishlist' || path === 'wishlist') {
       initialView = 'wishlist';
+    } else if (pageParam === 'story' || path === 'story' || pageParam === 'our-story' || path === 'our-story') {
+      initialView = 'story';
+    } else if (pageParam === 'admin' || path === 'admin') {
+      initialView = 'admin';
     } else if (pageParam === 'home' || path === '' || path === 'home') {
       initialView = 'home';
     }
@@ -133,15 +138,26 @@ export const NavigationProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       setMaxPrice(parsed.maxPrice);
     };
 
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
+
+  const scrollToTopImmediate = () => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    });
+  };
 
   const goToHome = () => {
     setCurrentView('home');
     setSelectedProductId(null);
     updateUrl('home');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    scrollToTopImmediate();
   };
 
   const goToShop = (options?: {
@@ -167,19 +183,15 @@ export const NavigationProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     setCurrentView('shop');
 
     updateUrl('shop', newCat, null, newSearch, newSort, newOrganic, newOnSale, maxPrice);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    scrollToTopImmediate();
   };
 
   const scrollToSection = (sectionId: string) => {
     const executeScroll = () => {
       const el = document.getElementById(sectionId);
       if (el) {
-        const lenis = getLenis();
-        if (lenis) {
-          lenis.scrollTo(el, { offset: -70, duration: 1.1 });
-        } else {
-          el.scrollIntoView({ behavior: 'smooth' });
-        }
+        const topY = el.getBoundingClientRect().top + window.scrollY - 70;
+        window.scrollTo({ top: topY, behavior: 'smooth' });
       }
     };
 
@@ -197,21 +209,35 @@ export const NavigationProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     setSelectedProductId(productId);
     setCurrentView('product');
     updateUrl('product', selectedCategory, productId);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    scrollToTopImmediate();
   };
 
   const goToWishlist = () => {
     setCurrentView('wishlist');
     setSelectedProductId(null);
     updateUrl('wishlist');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    scrollToTopImmediate();
   };
 
   const goToAccount = () => {
     setCurrentView('account');
     setSelectedProductId(null);
     updateUrl('account');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    scrollToTopImmediate();
+  };
+
+  const goToStory = () => {
+    setCurrentView('story');
+    setSelectedProductId(null);
+    updateUrl('story');
+    scrollToTopImmediate();
+  };
+
+  const goToAdmin = () => {
+    setCurrentView('admin');
+    setSelectedProductId(null);
+    updateUrl('admin');
+    scrollToTopImmediate();
   };
 
   const resetFilters = () => {
@@ -222,6 +248,7 @@ export const NavigationProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     setMaxPrice(25);
     setSortOption('featured');
     updateUrl('shop', 'all', null, '', 'featured', false, false, 25);
+    scrollToTopImmediate();
   };
 
   return (
@@ -240,14 +267,18 @@ export const NavigationProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         goToProduct,
         goToWishlist,
         goToAccount,
+        goToStory,
+        goToAdmin,
         scrollToSection,
         setSelectedCategory: (cat) => {
           setSelectedCategory(cat);
           if (currentView === 'shop') updateUrl('shop', cat);
+          scrollToTopImmediate();
         },
         setSearchQuery: (q) => {
           setSearchQuery(q);
           if (currentView === 'shop') updateUrl('shop', selectedCategory, null, q);
+          scrollToTopImmediate();
         },
         setSortOption: (s) => {
           setSortOption(s);

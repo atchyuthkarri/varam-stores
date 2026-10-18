@@ -16,7 +16,7 @@ export const BakeryDairySection: React.FC<BakeryDairySectionProps> = ({
 
   return (
     <section id="bakery-dairy" className="py-8 sm:py-12 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12">
         {/* Section Header */}
         <div className="gsap-section-header flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6">
           <div>

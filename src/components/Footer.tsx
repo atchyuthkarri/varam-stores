@@ -10,12 +10,13 @@ import {
 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useNavigation } from '../context/NavigationContext';
+import { Link000, Link001 } from './ui/skiper40';
 
 export const Footer: React.FC = () => {
   const [email, setEmail] = useState('');
   const [isSubscribed, setIsSubscribed] = useState(false);
   const { showToast } = useCart();
-  const { goToShop, scrollToSection } = useNavigation();
+  const { goToShop, goToStory, goToAdmin } = useNavigation();
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,11 +42,12 @@ export const Footer: React.FC = () => {
   ];
 
   const companyLinks = [
-    { label: 'About Us', action: () => scrollToSection('story') },
-    { label: 'Our Story', action: () => scrollToSection('story') },
+    { label: 'About Us', action: () => goToStory() },
+    { label: 'Our Story', action: () => goToStory() },
+    { label: 'Store Operations & Admin', action: () => goToAdmin() },
     { label: 'Sustainability', action: () => showToast('Our packaging is 100% compostable and certified.') },
-    { label: 'Careers', action: () => showToast('FreshMart is growing! Send CVs to careers@freshmart.co.uk') },
-    { label: 'Press & Media', action: () => showToast('For media inquiries: press@freshmart.co.uk') },
+    { label: 'Careers', action: () => showToast('Varam Foods is growing! Send CVs to careers@varamfoods.co.uk') },
+    { label: 'Press & Media', action: () => showToast('For media inquiries: press@varamfoods.co.uk') },
   ];
 
   const helpLinks = [
@@ -69,17 +71,17 @@ export const Footer: React.FC = () => {
           <img
             src="/footer-herbs-clean.png"
             alt="Fresh aromatic basil, rosemary and mint herbs"
-            className="absolute right-0 top-1/2 -translate-y-1/2 h-full w-auto max-w-none object-contain object-right opacity-90 sm:opacity-100"
+            className="absolute right-0 top-1/2 -translate-y-1/2 h-full w-auto max-w-none object-contain object-right opacity-80"
           />
         </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             {/* Left Content Column */}
             <div className="lg:col-span-6 xl:col-span-7 flex flex-col items-start">
               {/* Eyebrow with Sprout Icon */}
               <div className="inline-flex items-center gap-2 mb-2.5">
-                <span className="w-5 h-5 rounded-full bg-[#F8BE17] flex items-center justify-center text-[#18181B]">
+                <span className="w-5 h-5 rounded-full bg-[#F5D103] flex items-center justify-center text-[#18181B]">
                   <Sprout className="w-3.5 h-3.5" />
                 </span>
                 <span className="text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#18181B]">
@@ -103,7 +105,7 @@ export const Footer: React.FC = () => {
             {/* Right Form Column */}
             <div className="lg:col-span-6 xl:col-span-5 flex flex-col items-start lg:items-end">
               <form onSubmit={handleSubscribe} className="w-full max-w-lg">
-                <div className="flex items-center bg-white rounded-full p-1.5 border border-stone-300/80 shadow-sm hover:border-stone-400/80 focus-within:border-[#F5D103] focus-within:ring-2 focus-within:ring-[#F5D103]/30 transition-all">
+                <div className="flex items-center bg-stone-50 rounded-full p-1.5 border border-stone-200 shadow-sm focus-within:border-[#F5D103] focus-within:ring-2 focus-within:ring-[#F5D103]/20 transition-all">
                   <input
                     type="email"
                     value={email}
@@ -124,7 +126,7 @@ export const Footer: React.FC = () => {
 
                 {/* Trust / Anti-Spam Guarantee */}
                 <div className="flex items-center gap-2 mt-2.5 pl-3 text-[11px] sm:text-xs text-stone-500">
-                  <ShieldCheck className="w-4 h-4 text-[#18181B] shrink-0" />
+                  <ShieldCheck className="w-4 h-4 text-[#B45309] shrink-0" />
                   <span>No spam. Only fresh updates. You can unsubscribe anytime.</span>
                 </div>
               </form>
@@ -136,16 +138,18 @@ export const Footer: React.FC = () => {
       {/* ========================================================================= */}
       {/* 2. MAIN 6-COLUMN FOOTER NAVIGATION */}
       {/* ========================================================================= */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-10">
+      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12 pt-12 pb-10">
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-12 gap-8 lg:gap-6 pb-12 border-b border-stone-200/80">
           {/* Column 1: Brand & Socials (lg:col-span-4) */}
           <div className="col-span-2 md:col-span-3 lg:col-span-4 flex flex-col items-start pr-0 lg:pr-6">
-            <a href="#" className="inline-flex items-center gap-2.5 mb-3 group" aria-label="Varam Foods Home">
-              <img
-                src="/varam-logo.png"
-                alt="Varam Foods"
-                className="h-10 w-auto object-contain group-hover:scale-105 transition-transform duration-200"
-              />
+            <a href="#" className="inline-block mb-4 group" aria-label="Varam Foods Home">
+              <div className="overflow-hidden rounded-xl border border-stone-200/80 shadow-xs hover:shadow-md transition-all duration-300 max-w-[260px] sm:max-w-[280px] bg-white">
+                <img
+                  src="/varam-footer-banner.jpg"
+                  alt="Varam Foods"
+                  className="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-300"
+                />
+              </div>
             </a>
 
             <p className="text-xs text-stone-600 leading-relaxed mb-4 max-w-sm">
@@ -159,7 +163,7 @@ export const Footer: React.FC = () => {
               {/* Instagram */}
               <a
                 href="#social"
-                className="w-8 h-8 rounded-full bg-stone-100 hover:bg-[#F5D103] hover:text-[#18181B] hover:text-white flex items-center justify-center border border-stone-200/60 shadow-2xs transition-colors"
+                className="w-8 h-8 rounded-full bg-stone-100 hover:bg-[#F5D103] hover:text-[#18181B] flex items-center justify-center border border-stone-200/60 shadow-2xs transition-colors"
                 aria-label="Instagram"
               >
                 <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
@@ -170,7 +174,7 @@ export const Footer: React.FC = () => {
               {/* Facebook */}
               <a
                 href="#social"
-                className="w-8 h-8 rounded-full bg-stone-100 hover:bg-[#F5D103] hover:text-[#18181B] hover:text-white flex items-center justify-center border border-stone-200/60 shadow-2xs transition-colors"
+                className="w-8 h-8 rounded-full bg-stone-100 hover:bg-[#F5D103] hover:text-[#18181B] flex items-center justify-center border border-stone-200/60 shadow-2xs transition-colors"
                 aria-label="Facebook"
               >
                 <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
@@ -181,7 +185,7 @@ export const Footer: React.FC = () => {
               {/* YouTube */}
               <a
                 href="#social"
-                className="w-8 h-8 rounded-full bg-stone-100 hover:bg-[#F5D103] hover:text-[#18181B] hover:text-white flex items-center justify-center border border-stone-200/60 shadow-2xs transition-colors"
+                className="w-8 h-8 rounded-full bg-stone-100 hover:bg-[#F5D103] hover:text-[#18181B] flex items-center justify-center border border-stone-200/60 shadow-2xs transition-colors"
                 aria-label="YouTube"
               >
                 <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
@@ -192,7 +196,7 @@ export const Footer: React.FC = () => {
               {/* X Twitter */}
               <a
                 href="#social"
-                className="w-8 h-8 rounded-full bg-stone-100 hover:bg-[#F5D103] hover:text-[#18181B] hover:text-white flex items-center justify-center border border-stone-200/60 shadow-2xs transition-colors"
+                className="w-8 h-8 rounded-full bg-stone-100 hover:bg-[#F5D103] hover:text-[#18181B] flex items-center justify-center border border-stone-200/60 shadow-2xs transition-colors"
                 aria-label="X Twitter"
               >
                 <svg className="w-3 h-3 fill-current" viewBox="0 0 24 24">
@@ -203,7 +207,7 @@ export const Footer: React.FC = () => {
               {/* LinkedIn */}
               <a
                 href="#social"
-                className="w-8 h-8 rounded-full bg-stone-100 hover:bg-[#F5D103] hover:text-[#18181B] hover:text-white flex items-center justify-center border border-stone-200/60 shadow-2xs transition-colors"
+                className="w-8 h-8 rounded-full bg-stone-100 hover:bg-[#F5D103] hover:text-[#18181B] flex items-center justify-center border border-stone-200/60 shadow-2xs transition-colors"
                 aria-label="LinkedIn"
               >
                 <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
@@ -221,13 +225,12 @@ export const Footer: React.FC = () => {
             <ul className="space-y-2 text-xs text-stone-600">
               {shopLinks.map((link, idx) => (
                 <li key={idx}>
-                  <button
-                    type="button"
+                  <Link000
                     onClick={link.action}
-                    className="hover:text-[#B45309] hover:underline transition-colors text-left cursor-pointer"
+                    className="hover:text-[#B45309] text-left transition-colors"
                   >
                     {link.label}
-                  </button>
+                  </Link000>
                 </li>
               ))}
             </ul>
@@ -241,13 +244,12 @@ export const Footer: React.FC = () => {
             <ul className="space-y-2 text-xs text-stone-600">
               {companyLinks.map((link, idx) => (
                 <li key={idx}>
-                  <button
-                    type="button"
+                  <Link000
                     onClick={link.action}
-                    className="hover:text-[#B45309] hover:underline transition-colors text-left cursor-pointer"
+                    className="hover:text-[#B45309] text-left transition-colors"
                   >
                     {link.label}
-                  </button>
+                  </Link000>
                 </li>
               ))}
             </ul>
@@ -261,9 +263,12 @@ export const Footer: React.FC = () => {
             <ul className="space-y-2 text-xs text-stone-600">
               {helpLinks.map((link, idx) => (
                 <li key={idx}>
-                  <a href={link.href} className="hover:text-[#B45309] hover:underline transition-colors">
+                  <Link000
+                    href={link.href}
+                    className="hover:text-[#B45309] transition-colors"
+                  >
                     {link.label}
-                  </a>
+                  </Link000>
                 </li>
               ))}
             </ul>
@@ -281,15 +286,15 @@ export const Footer: React.FC = () => {
               </li>
               <li className="flex items-start gap-2.5">
                 <Mail className="w-4 h-4 text-[#18181B] shrink-0 mt-0.5" />
-                <a href="mailto:support@freshmart.co.uk" className="hover:text-[#B45309] hover:underline transition-colors">
-                  support@freshmart.co.uk
-                </a>
+                <Link000 href="mailto:support@varamfoods.co.uk" className="hover:text-[#B45309] transition-colors">
+                  support@varamfoods.co.uk
+                </Link000>
               </li>
               <li className="flex items-start gap-2.5">
                 <Phone className="w-4 h-4 text-[#18181B] shrink-0 mt-0.5" />
-                <a href="tel:+441234567890" className="hover:text-[#B45309] hover:underline transition-colors">
+                <Link000 href="tel:+441234567890" className="hover:text-[#B45309] transition-colors">
                   +44 1234 567890
-                </a>
+                </Link000>
               </li>
               <li className="flex items-start gap-2.5">
                 <Clock className="w-4 h-4 text-[#18181B] shrink-0 mt-0.5" />
@@ -303,23 +308,84 @@ export const Footer: React.FC = () => {
         </div>
 
         {/* ========================================================================= */}
-        {/* 3. BOTTOM COPYRIGHT & LEGAL BAR */}
+        {/* 3. BOTTOM COPYRIGHT, LEGAL & PAYMENT METHODS BAR */}
         {/* ========================================================================= */}
-        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-stone-500">
-          <p>© 2026 Varam Foods. All rights reserved.</p>
+        <div className="pt-6 flex flex-col lg:flex-row items-center justify-between gap-5 text-xs text-stone-500">
+          {/* Left: Copyright */}
+          <p className="text-center lg:text-left">© 2026 Varam Foods. All rights reserved.</p>
 
-          <div className="flex items-center gap-4 sm:gap-6 text-stone-500">
-            <a href="#privacy" className="hover:text-[#B45309] hover:underline transition-colors">
+          {/* Middle: Legal Policies & Staff Link */}
+          <div className="flex items-center gap-3 sm:gap-5 text-stone-500 flex-wrap justify-center">
+            <Link000 href="#privacy" className="hover:text-[#B45309] transition-colors">
               Privacy Policy
-            </a>
+            </Link000>
             <span className="text-stone-300">|</span>
-            <a href="#terms" className="hover:text-[#B45309] hover:underline transition-colors">
+            <Link000 href="#terms" className="hover:text-[#B45309] transition-colors">
               Terms of Service
-            </a>
+            </Link000>
             <span className="text-stone-300">|</span>
-            <a href="#cookies" className="hover:text-[#B45309] hover:underline transition-colors">
+            <Link000 href="#cookies" className="hover:text-[#B45309] transition-colors">
               Cookie Policy
-            </a>
+            </Link000>
+            <span className="text-stone-300">|</span>
+            <Link001
+              onClick={goToAdmin}
+              className="text-[#B45309] hover:text-[#D97706] font-medium transition-colors"
+            >
+              Staff & Admin Portal
+            </Link001>
+          </div>
+
+          {/* Right: Verified Payment Methods Logos (Official Vector Badges) */}
+          <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap justify-center" aria-label="Accepted Payment Methods">
+            <img 
+              src="/payments/visa.svg" 
+              alt="Visa" 
+              title="Visa" 
+              className="h-6 sm:h-7 w-auto rounded shadow-2xs hover:scale-105 transition-transform cursor-pointer" 
+            />
+            <img 
+              src="/payments/mastercard.svg" 
+              alt="Mastercard" 
+              title="Mastercard" 
+              className="h-6 sm:h-7 w-auto rounded shadow-2xs hover:scale-105 transition-transform cursor-pointer" 
+            />
+            <img 
+              src="/payments/paypal.svg" 
+              alt="PayPal" 
+              title="PayPal" 
+              className="h-6 sm:h-7 w-auto rounded shadow-2xs hover:scale-105 transition-transform cursor-pointer" 
+            />
+            <img 
+              src="/payments/amex.svg" 
+              alt="American Express" 
+              title="American Express" 
+              className="h-6 sm:h-7 w-auto rounded shadow-2xs hover:scale-105 transition-transform cursor-pointer" 
+            />
+            <img 
+              src="/payments/apple-pay.svg" 
+              alt="Apple Pay" 
+              title="Apple Pay" 
+              className="h-6 sm:h-7 w-auto rounded shadow-2xs hover:scale-105 transition-transform cursor-pointer" 
+            />
+            <img 
+              src="/payments/google-pay.svg" 
+              alt="Google Pay" 
+              title="Google Pay" 
+              className="h-6 sm:h-7 w-auto rounded shadow-2xs hover:scale-105 transition-transform cursor-pointer" 
+            />
+            <img 
+              src="/payments/discover.svg" 
+              alt="Discover" 
+              title="Discover" 
+              className="h-6 sm:h-7 w-auto rounded shadow-2xs hover:scale-105 transition-transform cursor-pointer" 
+            />
+            <img 
+              src="/payments/diners-club.svg" 
+              alt="Diners Club" 
+              title="Diners Club" 
+              className="h-6 sm:h-7 w-auto rounded shadow-2xs hover:scale-105 transition-transform cursor-pointer" 
+            />
           </div>
         </div>
       </div>

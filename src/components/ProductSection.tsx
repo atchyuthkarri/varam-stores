@@ -26,7 +26,7 @@ export const ProductSection: React.FC<ProductSectionProps> = ({
 
   return (
     <section id="fresh-picks" className="py-8 sm:py-12 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12">
         {/* Wishlist Active Notification */}
         {isWishlistFilterActive && (
           <div className="mb-6 p-4 bg-white rounded-2xl border border-rose-200 shadow-sm flex items-center justify-between">

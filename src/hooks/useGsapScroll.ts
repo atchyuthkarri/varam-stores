@@ -1,39 +1,15 @@
 import { useEffect } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import Lenis from 'lenis';
 
 gsap.registerPlugin(ScrollTrigger);
 
-let lenisInstance: Lenis | null = null;
-
-export const getLenis = () => lenisInstance;
+// Export getLenis as null for seamless backward compatibility
+export const getLenis = () => null;
 
 export const useGsapScroll = () => {
   useEffect(() => {
-    // 1. Initialize Lenis smooth scroll
-    const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: 'vertical',
-      gestureOrientation: 'vertical',
-      smoothWheel: true,
-      wheelMultiplier: 0.95,
-      touchMultiplier: 1.5,
-    });
-    lenisInstance = lenis;
-
-    // Connect Lenis to ScrollTrigger
-    lenis.on('scroll', ScrollTrigger.update);
-
-    const updateTicker = (time: number) => {
-      lenis.raf(time * 1000);
-    };
-
-    gsap.ticker.add(updateTicker);
-    gsap.ticker.lagSmoothing(0);
-
-    // 2. Smooth Anchor Navigation via Lenis
+    // 1. Smooth Anchor Navigation using native browser scrolling
     const handleAnchorClick = (e: MouseEvent) => {
       const target = (e.target as HTMLElement).closest('a');
       if (!target) return;
@@ -43,10 +19,10 @@ export const useGsapScroll = () => {
         const targetElement = document.querySelector(href);
         if (targetElement) {
           e.preventDefault();
-          lenis.scrollTo(targetElement as HTMLElement, {
-            offset: -85,
-            duration: 1.2,
-            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+          const targetY = targetElement.getBoundingClientRect().top + window.scrollY - 85;
+          window.scrollTo({
+            top: targetY,
+            behavior: 'smooth',
           });
         }
       }
@@ -54,7 +30,7 @@ export const useGsapScroll = () => {
 
     document.addEventListener('click', handleAnchorClick);
 
-    // 3. GSAP Animations & In/Out Transitions
+    // 2. GSAP Animations & In/Out Transitions
     const ctx = gsap.context(() => {
       // --- Hero Parallax & Reveal ---
       const heroBg = document.querySelector('.gsap-hero-bg');
@@ -149,98 +125,8 @@ export const useGsapScroll = () => {
         });
       }
 
-      // --- Product Sections Reveal (Fresh Picks, Bakery & Dairy, Most Selling, Pantry Superfoods) ---
-      ['#fresh-picks', '#bakery-dairy', '#most-selling', '#pantry-superfoods'].forEach((secId) => {
-        const sectionCards = gsap.utils.toArray<HTMLElement>(`${secId} .gsap-product-card`);
-        if (sectionCards.length > 0) {
-          gsap.from(sectionCards, {
-            opacity: 0,
-            y: 35,
-            scale: 0.97,
-            duration: 0.65,
-            stagger: 0.07,
-            ease: 'power2.out',
-            scrollTrigger: {
-              trigger: secId,
-              start: 'top 85%',
-              toggleActions: 'play none none reverse',
-            },
-          });
-        }
-      });
-
-      // --- Trust Bar Reveal ---
-      const trustItems = gsap.utils.toArray<HTMLElement>('.gsap-trust-item');
-      if (trustItems.length > 0) {
-        gsap.from(trustItems, {
-          opacity: 0,
-          y: 30,
-          stagger: 0.1,
-          duration: 0.7,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: '.gsap-trust-bar',
-            start: 'top 90%',
-            toggleActions: 'play none none none',
-            once: true,
-          },
-        });
-      }
-
-      // --- Brand Story Reveal ---
-      const storySection = document.querySelector('#story');
-      if (storySection) {
-        const storyContent = storySection.querySelector('.gsap-story-content');
-        const storyImage = storySection.querySelector('.gsap-story-image');
-
-        if (storyContent) {
-          gsap.from(storyContent, {
-            opacity: 0,
-            x: -40,
-            duration: 0.8,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: storySection,
-              start: 'top 85%',
-              toggleActions: 'play none none none',
-              once: true,
-            },
-          });
-        }
-
-        if (storyImage) {
-          gsap.from(storyImage, {
-            opacity: 0,
-            x: 40,
-            scale: 0.96,
-            duration: 0.85,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: storySection,
-              start: 'top 85%',
-              toggleActions: 'play none none none',
-              once: true,
-            },
-          });
-        }
-      }
-
-      // --- Generic Section Headings Reveal ---
-      const headings = gsap.utils.toArray<HTMLElement>('.gsap-section-header');
-      headings.forEach((header) => {
-        gsap.from(header, {
-          opacity: 0,
-          y: 25,
-          duration: 0.7,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: header,
-            start: 'top 90%',
-            toggleActions: 'play none none none',
-            once: true,
-          },
-        });
-      });
+      // Section headers are kept fully visible by default without opacity animations
+      // to guarantee instant readability across all devices and fast scrolling.
     });
 
     // Refresh ScrollTrigger once DOM settles
@@ -251,10 +137,7 @@ export const useGsapScroll = () => {
     return () => {
       clearTimeout(refreshTimer);
       document.removeEventListener('click', handleAnchorClick);
-      gsap.ticker.remove(updateTicker);
       ctx.revert();
-      lenis.destroy();
-      lenisInstance = null;
     };
   }, []);
 };

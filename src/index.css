@@ -1,82 +1,94 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:is(.dark *));
+
 @theme {
   --color-brand-primary: #F5D103;
-  --color-brand-navy: #18181B;
-  --color-brand-sapphire: #B45309;
   --color-brand-gold: #F5D103;
   --color-brand-gold-light: #FDE047;
   --color-brand-gold-dark: #B45309;
-  --color-brand-coral: #F4A45D;
+  --color-brand-sapphire: #B45309;
+  --color-brand-navy: #18181B;
   --color-brand-forest: #18181B;
   --color-brand-botanical: #B45309;
   --color-brand-citrus: #F5D103;
+  --color-brand-coral: #F4A45D;
   --color-brand-ivory: #F8FAFC;
   --color-brand-cream: #F8F9FA;
+  --color-brand-canvas: #FFFFFF;
   --color-brand-surface: #FFFFFF;
   --color-brand-text: #18181B;
   --color-brand-muted: #64748B;
   --color-brand-border: #E2E8F0;
 
-  --font-serif: "Playfair Display", Georgia, serif;
-  --font-sans: "Manrope", system-ui, -apple-system, sans-serif;
-  --font-body: "Manrope", system-ui, -apple-system, sans-serif;
-  --font-secondary: "Outfit", "DM Sans", "Poppins", sans-serif;
-  --font-outfit: "Outfit", sans-serif;
-  --font-dm-sans: "DM Sans", sans-serif;
+  --font-serif: "Poppins", sans-serif;
+  --font-sans: "Poppins", system-ui, -apple-system, sans-serif;
+  --font-body: "Poppins", system-ui, -apple-system, sans-serif;
+  --font-secondary: "Poppins", sans-serif;
+  --font-outfit: "Poppins", sans-serif;
+  --font-dm-sans: "Poppins", sans-serif;
   --font-poppins: "Poppins", sans-serif;
-  --font-prompt: "Prompt", sans-serif;
-  --font-im-fell: "IM Fell French Canon", serif;
-  --font-zen: "Zen Antique Soft", serif;
-  --font-script: "Caveat", "Imperial Script", cursive;
+  --font-prompt: "Poppins", sans-serif;
+  --font-im-fell: "Poppins", sans-serif;
+  --font-zen: "Poppins", sans-serif;
+  --font-script: "Poppins", sans-serif;
 }
 
 :root {
   --primary: #F5D103;
-  --navy: #18181B;
-  --sapphire: #B45309;
   --gold: #F5D103;
   --gold-light: #FDE047;
   --gold-dark: #B45309;
+  --sapphire: #B45309;
+  --navy: #18181B;
   --coral: #F4A45D;
   --forest: #18181B;
   --botanical: #B45309;
   --citrus: #F5D103;
   --ivory: #F8FAFC;
   --cream: #F8F9FA;
+  --canvas: #FFFFFF;
   --white: #FFFFFF;
   --text: #18181B;
   --muted: #64748B;
   --border: #E2E8F0;
+  --sidebar: hsl(0 0% 98%);
+  --sidebar-foreground: hsl(240 5.3% 26.1%);
+  --sidebar-primary: hsl(240 5.9% 10%);
+  --sidebar-primary-foreground: hsl(0 0% 98%);
+  --sidebar-accent: hsl(240 4.8% 95.9%);
+  --sidebar-accent-foreground: hsl(240 5.9% 10%);
+  --sidebar-border: hsl(220 13% 91%);
+  --sidebar-ring: hsl(217.2 91.2% 59.8%);
 }
 
 /* ========================================================================= */
-/* LENIS SMOOTH SCROLLING STYLES                                             */
+/* NATIVE HARDWARE-ACCELERATED SMOOTH SCROLLING                              */
 /* ========================================================================= */
-html.lenis, html.lenis body {
-  height: auto;
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
-.lenis.lenis-smooth {
-  scroll-behavior: auto !important;
+body {
+  overflow-x: hidden;
+  overflow-y: visible;
 }
 
-.lenis.lenis-smooth [data-lenis-prevent] {
-  overscroll-behavior: contain;
-}
-
-.lenis.lenis-stopped {
-  overflow: hidden;
-}
-
-.lenis.lenis-smooth iframe {
-  pointer-events: none;
+/* ========================================================================= */
+/* GLOBAL POPPINS TYPOGRAPHY WITH CAREFULLY ADJUSTED WEIGHTS                */
+/* ========================================================================= */
+*,
+*::before,
+*::after {
+  font-family: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 html {
-  font-family: 'DM Sans', 'Outfit', 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background-color: #FFFFFF;
-  color: #18231E;
+  color: #18181B;
 }
 
 body {
@@ -84,15 +96,25 @@ body {
   padding: 0;
   min-height: 100vh;
   background-color: #FFFFFF;
-  font-family: 'DM Sans', 'Outfit', 'Poppins', sans-serif;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  line-height: 1.5;
 }
 
-/* Headings retain luxurious Playfair Display */
-h1, h2, h3, h4, h5, h6, .font-serif-heading {
-  font-family: 'Playfair Display', Georgia, serif;
+/* Headings use Poppins with bold weight */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.font-serif-heading {
+  font-family: 'Poppins', sans-serif !important;
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
-/* Everywhere Else: Interactive UI, buttons, inputs, tabs, navigation use Outfit */
+/* Interactive elements: buttons, inputs, navigation */
 button,
 input,
 select,
@@ -102,55 +124,41 @@ nav,
 [role="button"],
 .btn-magnetic,
 .font-secondary {
-  font-family: 'Outfit', 'DM Sans', 'Poppins', system-ui, sans-serif;
+  font-family: 'Poppins', sans-serif !important;
 }
 
-/* Body copy, descriptions, list items, labels, metadata use DM Sans & Outfit */
+/* Body copy, paragraphs, descriptions */
 p,
 span,
 li,
 label,
-small,
-strong,
-b,
 caption,
 table {
-  font-family: 'DM Sans', 'Outfit', system-ui, sans-serif;
-}
-
-/* Italic accents in headings & quotes use authentic IM Fell French Canon / Zen Antique Soft */
-.font-im-fell,
-.font-antique {
-  font-family: 'IM Fell French Canon', 'Zen Antique Soft', Georgia, serif;
-}
-
-.font-script-accent,
-.font-imperial {
-  font-family: 'Imperial Script', 'Caveat', cursive;
-}
-
-.font-quintessential {
-  font-family: 'Quintessential', cursive;
-}
-
-.font-outfit {
-  font-family: 'Outfit', sans-serif;
-}
-
-.font-dm-sans {
-  font-family: 'DM Sans', sans-serif;
-}
-
-.font-poppins {
   font-family: 'Poppins', sans-serif;
 }
 
-.font-prompt {
-  font-family: 'Prompt', sans-serif;
+strong,
+b {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
 }
 
+/* Map all font utility classes to Poppins with appropriate weights */
+.font-serif,
+.font-sans,
+.font-body,
+.font-secondary,
+.font-outfit,
+.font-dm-sans,
+.font-poppins,
+.font-prompt,
+.font-im-fell,
+.font-antique,
+.font-script-accent,
+.font-imperial,
+.font-quintessential,
 .font-zen {
-  font-family: 'Zen Antique Soft', Georgia, serif;
+  font-family: 'Poppins', sans-serif !important;
 }
 
 /* ========================================================================= */
@@ -221,13 +229,16 @@ table {
 ::-webkit-scrollbar {
   width: 7px;
 }
+
 ::-webkit-scrollbar-track {
   background: #F8FAFC;
 }
+
 ::-webkit-scrollbar-thumb {
   background: rgba(245, 209, 3, 0.45);
   border-radius: 9999px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(217, 119, 6, 0.6);
 }
@@ -237,7 +248,89 @@ table {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
 .scrollbar-none::-webkit-scrollbar {
   display: none;
 }
 
+/* ========================================================================= */
+/* CONTINUOUS BRAND MARQUEE ANIMATION                                        */
+/* ========================================================================= */
+@keyframes marquee-scroll {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee-infinite {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: marquee-scroll 45s linear infinite;
+}
+
+.animate-marquee-infinite:hover,
+.group-marquee:hover .animate-marquee-infinite {
+  animation-play-state: paused;
+}
+
+/* ========================================================================= */
+/* CONTINUOUS TESTIMONIALS MOVING CARDS ANIMATION                           */
+/* ========================================================================= */
+@keyframes testimonial-scroll {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-testimonials-infinite {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: testimonial-scroll 55s linear infinite;
+}
+
+.animate-testimonials-infinite:hover,
+.group-testimonials:hover .animate-testimonials-infinite {
+  animation-play-state: paused;
+}
+
+/* Reduced motion accessibility support */
+@media (prefers-reduced-motion: reduce) {
+
+  .animate-marquee-infinite,
+  .animate-testimonials-infinite {
+    animation: none;
+    overflow-x: auto;
+  }
+}
+
+.dark {
+  --sidebar: hsl(240 5.9% 10%);
+  --sidebar-foreground: hsl(240 4.8% 95.9%);
+  --sidebar-primary: hsl(224.3 76.3% 48%);
+  --sidebar-primary-foreground: hsl(0 0% 100%);
+  --sidebar-accent: hsl(240 3.7% 15.9%);
+  --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
+  --sidebar-border: hsl(240 3.7% 15.9%);
+  --sidebar-ring: hsl(217.2 91.2% 59.8%);
+}
+
+@theme inline {
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}

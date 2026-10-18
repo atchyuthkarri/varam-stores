@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { products } from '../data/products';
 import { categories } from '../data/categories';
+import { popularBrands } from '../data/brands';
 import { ProductCard } from './ProductCard';
 import { useNavigation } from '../context/NavigationContext';
 import { backdropVariants, MOTION_DURATIONS, MOTION_EASINGS } from '../motion';
@@ -94,6 +95,15 @@ export const ShopCataloguePage: React.FC<ShopCataloguePageProps> = ({
     setPrevFilterKey(currentFilterKey);
     setVisibleCount(12);
   }
+
+  // Ensure the catalogue page always starts from the top whenever category, search, or filters change
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    const frame = requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [selectedCategory, searchQuery, filterOrganic, filterOnSale, maxPrice, minRating]);
 
   // Handle body scroll lock & Escape for mobile filter
   useEffect(() => {
@@ -220,12 +230,12 @@ export const ShopCataloguePage: React.FC<ShopCataloguePageProps> = ({
                   onClick={() => setSelectedCategory('all')}
                   className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-colors cursor-pointer ${
                     selectedCategory === 'all'
-                      ? 'bg-[#F5D103] text-[#18181B]'
-                      : 'text-[#18181B] hover:bg-stone-50'
+                      ? 'bg-[#18181B] text-[#F5D103]'
+                      : 'text-[#18181B] hover:bg-amber-100'
                   }`}
                 >
                   <span>All Categories</span>
-                  <span className={`text-[11px] ${selectedCategory === 'all' ? 'text-[#F8BE17]' : 'text-stone-400'}`}>
+                  <span className={`text-[11px] ${selectedCategory === 'all' ? 'text-[#F5D103]' : 'text-stone-400'}`}>
                     {products.length}
                   </span>
                 </button>
@@ -240,14 +250,57 @@ export const ShopCataloguePage: React.FC<ShopCataloguePageProps> = ({
                       onClick={() => setSelectedCategory(cat.id)}
                       className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-colors cursor-pointer ${
                         isSelected
-                          ? 'bg-[#F5D103] text-[#18181B]'
-                          : 'text-[#18181B] hover:bg-stone-50'
+                          ? 'bg-[#18181B] text-[#F5D103]'
+                          : 'text-[#18181B] hover:bg-amber-100'
                       }`}
                     >
                       <span>{cat.name}</span>
-                      <span className={`text-[11px] ${isSelected ? 'text-[#F8BE17]' : 'text-stone-400'}`}>
+                      <span className={`text-[11px] ${isSelected ? 'text-[#F5D103]' : 'text-stone-400'}`}>
                         {count}
                       </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Filter Group: Authentic Indian Brands */}
+            <div className="mb-6 pt-5 border-t border-stone-100">
+              <div className="flex items-center justify-between mb-2.5">
+                <h4 className="text-xs font-extrabold text-[#18181B] uppercase tracking-wider">
+                  Popular Brands
+                </h4>
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => setSearchQuery('')}
+                    className="text-[10px] text-[#B45309] font-bold hover:underline cursor-pointer"
+                  >
+                    Clear
+                  </button>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {popularBrands.slice(0, 15).map((brand) => {
+                  const isSelected = searchQuery.toLowerCase() === brand.name.toLowerCase();
+                  return (
+                    <button
+                      key={brand.id}
+                      type="button"
+                      onClick={() => {
+                        if (isSelected) {
+                          setSearchQuery('');
+                        } else {
+                          setSearchQuery(brand.name);
+                        }
+                      }}
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all cursor-pointer ${
+                        isSelected
+                          ? 'bg-[#18181B] text-[#F5D103] shadow-xs'
+                          : 'bg-stone-50 border border-stone-200/80 text-stone-700 hover:text-[#B45309] hover:bg-amber-100 hover:border-[#F5D103]'
+                      }`}
+                    >
+                      {brand.name}
                     </button>
                   );
                 })}
@@ -265,7 +318,7 @@ export const ShopCataloguePage: React.FC<ShopCataloguePageProps> = ({
                     type="checkbox"
                     checked={filterOrganic}
                     onChange={(e) => setFilterOrganic(e.target.checked)}
-                    className="w-4 h-4 rounded text-[#18181B] focus:ring-[#F5D103] border-stone-300 cursor-pointer accent-[#F5D103]"
+                    className="w-4 h-4 rounded text-[#B45309] focus:ring-[#F5D103] border-stone-300 cursor-pointer accent-[#F5D103]"
                   />
                   <span>100% Organic Only</span>
                 </label>
@@ -275,7 +328,7 @@ export const ShopCataloguePage: React.FC<ShopCataloguePageProps> = ({
                     type="checkbox"
                     checked={filterOnSale}
                     onChange={(e) => setFilterOnSale(e.target.checked)}
-                    className="w-4 h-4 rounded text-[#18181B] focus:ring-[#F5D103] border-stone-300 cursor-pointer accent-[#F5D103]"
+                    className="w-4 h-4 rounded text-[#B45309] focus:ring-[#F5D103] border-stone-300 cursor-pointer accent-[#F5D103]"
                   />
                   <span>On Sale &amp; Special Offers</span>
                 </label>
@@ -325,8 +378,8 @@ export const ShopCataloguePage: React.FC<ShopCataloguePageProps> = ({
                     onClick={() => setMinRating(r.value)}
                     className={`w-full text-left px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
                       minRating === r.value
-                        ? 'bg-amber-100 text-[#18181B] font-bold border border-amber-200/60'
-                        : 'text-stone-600 hover:bg-stone-50'
+                        ? 'bg-amber-100 text-[#B45309] font-bold border border-amber-200/60'
+                        : 'text-stone-500 hover:bg-stone-50'
                     }`}
                   >
                     {r.label}
@@ -338,12 +391,12 @@ export const ShopCataloguePage: React.FC<ShopCataloguePageProps> = ({
 
       {/* 2. Scrollable Products Area */}
       <div className="w-full lg:pl-72 xl:pl-80">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 pb-20">
+        <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12 pt-4 sm:pt-6 pb-20">
           <main className="w-full min-w-0">
             {/* 1. Editorial Catalogue Breadcrumb & Header Banner */}
-            <div className="bg-gradient-to-b from-white to-[#F8F9FA] rounded-3xl border border-stone-200/90 p-5 sm:p-7 mb-5 shadow-2xs">
+            <div className="bg-gradient-to-b from-white to-[#F8FAFC] rounded-3xl border border-stone-200/90 p-5 sm:p-7 mb-5 shadow-2xs">
               {/* Breadcrumbs */}
-              <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-[#737A72] mb-3">
+              <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-stone-500 mb-3">
                 <button
                   type="button"
                   onClick={goToHome}
@@ -389,7 +442,7 @@ export const ShopCataloguePage: React.FC<ShopCataloguePageProps> = ({
                   </motion.div>
                 </AnimatePresence>
 
-                <p className="text-xs sm:text-sm text-[#737A72] max-w-sm">
+                <p className="text-xs sm:text-sm text-stone-500 max-w-sm">
                   Fresh produce, grass-fed dairy, warm sourdough, and organic pantry items delivered straight to your door in Hatfield.
                 </p>
               </div>
@@ -402,7 +455,7 @@ export const ShopCataloguePage: React.FC<ShopCataloguePageProps> = ({
                   className={`px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
                     selectedCategory === 'all'
                       ? 'bg-[#18181B] text-[#F5D103] shadow-xs'
-                      : 'bg-white text-[#18181B] border border-stone-200/80 hover:bg-stone-50'
+                      : 'bg-white text-[#18181B] border border-stone-200 hover:bg-stone-50'
                   }`}
                 >
                   All Items ({products.length})
@@ -419,7 +472,7 @@ export const ShopCataloguePage: React.FC<ShopCataloguePageProps> = ({
                       className={`px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
                         isSelected
                           ? 'bg-[#18181B] text-[#F5D103] shadow-xs'
-                          : 'bg-white text-[#18181B] border border-stone-200/80 hover:bg-stone-50'
+                          : 'bg-white text-[#18181B] border border-stone-200 hover:bg-stone-50'
                       }`}
                     >
                       {cat.name} ({count})
@@ -429,7 +482,7 @@ export const ShopCataloguePage: React.FC<ShopCataloguePageProps> = ({
               </div>
             </div>
             {/* Top Control Bar: Search, Mobile Filter Trigger & Sort Dropdown */}
-            <div className="bg-white rounded-2xl border border-stone-200/80 p-3.5 sm:p-4 mb-5 shadow-2xs flex flex-wrap items-center justify-between gap-3">
+            <div className="bg-white rounded-2xl border border-stone-200 p-3.5 sm:p-4 mb-5 shadow-2xs flex flex-wrap items-center justify-between gap-3">
               {/* Search Input */}
               <div className="relative flex-1 min-w-[200px] max-w-md">
                 <input
@@ -437,7 +490,7 @@ export const ShopCataloguePage: React.FC<ShopCataloguePageProps> = ({
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search products in catalogue..."
-                  className="w-full pl-9 pr-8 py-2 text-xs sm:text-sm rounded-xl bg-[#F8F9FA] border border-stone-200 text-[#18181B] placeholder-[#737A72] focus:outline-none focus:ring-2 focus:ring-[#F5D103]/40 focus:border-[#F5D103]"
+                  className="w-full pl-9 pr-8 py-2 text-xs sm:text-sm rounded-xl bg-stone-50 border border-stone-200 text-[#18181B] placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-[#F5D103]/20 focus:border-[#F5D103]"
                 />
                 <Search className="w-4 h-4 text-stone-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                 {searchQuery && (
@@ -457,7 +510,7 @@ export const ShopCataloguePage: React.FC<ShopCataloguePageProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsMobileFilterOpen(true)}
-                  className="lg:hidden flex items-center gap-2 px-3.5 py-2 rounded-xl border border-stone-200 bg-[#F8F9FA] text-xs font-bold text-[#18181B] hover:bg-stone-100 transition-colors cursor-pointer"
+                  className="lg:hidden flex items-center gap-2 px-3.5 py-2 rounded-xl border border-stone-200 bg-stone-50 text-xs font-bold text-[#18181B] hover:bg-stone-100 transition-colors cursor-pointer"
                 >
                   <SlidersHorizontal className="w-3.5 h-3.5 text-[#18181B]" />
                   <span>Filters</span>
@@ -470,14 +523,14 @@ export const ShopCataloguePage: React.FC<ShopCataloguePageProps> = ({
 
                 {/* Sort Dropdown */}
                 <div className="flex items-center gap-2">
-                  <span className="hidden sm:inline text-xs text-[#737A72] font-medium">
+                  <span className="hidden sm:inline text-xs text-stone-500 font-medium">
                     Sort by:
                   </span>
                   <div className="relative">
                     <select
                       value={sortOption}
                       onChange={(e) => setSortOption(e.target.value)}
-                      className="appearance-none bg-[#F8F9FA] text-[#18181B] text-xs font-bold pl-3 pr-8 py-2 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-[#F5D103]/40 cursor-pointer"
+                      className="appearance-none bg-stone-50 text-[#18181B] text-xs font-bold pl-3 pr-8 py-2 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-[#F5D103]/20 cursor-pointer"
                       aria-label="Sort products"
                     >
                       <option value="featured">Featured Picks</option>
@@ -496,10 +549,10 @@ export const ShopCataloguePage: React.FC<ShopCataloguePageProps> = ({
             {/* Active Filter Chips Row */}
             {activeFiltersCount > 0 && (
               <div className="flex flex-wrap items-center gap-2 mb-5">
-                <span className="text-xs text-[#737A72] font-semibold">Active filters:</span>
+                <span className="text-xs text-stone-500 font-semibold">Active filters:</span>
 
                 {selectedCategory !== 'all' && (
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-amber-100 text-[#18181B] text-xs font-semibold border border-amber-200/60">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-amber-100 text-[#B45309] text-xs font-semibold border border-amber-200/60">
                     Category: {currentCategoryName}
                     <button
                       type="button"
@@ -513,7 +566,7 @@ export const ShopCataloguePage: React.FC<ShopCataloguePageProps> = ({
                 )}
 
                 {filterOrganic && (
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-amber-100 text-[#92400E] text-xs font-semibold border border-amber-200/60">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-amber-100 text-[#B45309] text-xs font-semibold border border-amber-200/60">
                     <Leaf className="w-3 h-3 text-[#B45309]" />
                     100% Organic
                     <button
@@ -528,7 +581,7 @@ export const ShopCataloguePage: React.FC<ShopCataloguePageProps> = ({
                 )}
 
                 {filterOnSale && (
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-amber-50 text-amber-900 text-xs font-semibold">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-amber-100 text-[#B45309] text-xs font-semibold border border-amber-200/60">
                     <Tag className="w-3 h-3" />
                     Special Offers
                     <button
@@ -609,20 +662,20 @@ export const ShopCataloguePage: React.FC<ShopCataloguePageProps> = ({
             {sortedProducts.length === 0 ? (
               /* Empty Results State */
               <div className="bg-white rounded-3xl border border-stone-200/80 p-8 sm:p-14 text-center max-w-lg mx-auto shadow-xs">
-                <div className="w-16 h-16 rounded-full bg-[#F8F9FA] text-[#B45309] flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 rounded-full bg-amber-100 text-[#B45309] flex items-center justify-center mx-auto mb-4">
                   <Search className="w-7 h-7" />
                 </div>
                 <h3 className="font-serif-heading font-bold text-2xl text-[#18181B] mb-2">
                   No matching items found
                 </h3>
-                <p className="text-xs sm:text-sm text-[#737A72] mb-6">
+                <p className="text-xs sm:text-sm text-stone-500 mb-6">
                   We could not find any groceries matching your active filters. Try clearing your search query or loosening dietary filters.
                 </p>
                 <div className="flex flex-wrap items-center justify-center gap-3">
                   <button
                     type="button"
                     onClick={resetFilters}
-                    className="px-6 py-2.5 rounded-full bg-[#18181B] text-[#F5D103] text-xs font-bold hover:bg-[#E5A800] transition-colors cursor-pointer"
+                    className="px-6 py-2.5 rounded-full bg-[#18181B] text-[#F5D103] text-xs font-bold hover:bg-[#E5A800] hover:text-[#18181B] transition-colors cursor-pointer"
                   >
                     Reset All Filters
                   </button>
@@ -762,6 +815,49 @@ export const ShopCataloguePage: React.FC<ShopCataloguePageProps> = ({
                   </div>
                 </div>
 
+                {/* Popular Brands Pills in Mobile Modal */}
+                <div className="pt-4 border-t border-stone-100">
+                  <div className="flex items-center justify-between mb-2.5">
+                    <h4 className="text-xs font-extrabold text-[#18181B] uppercase tracking-wider">
+                      Popular Indian Brands
+                    </h4>
+                    {searchQuery && (
+                      <button
+                        type="button"
+                        onClick={() => setSearchQuery('')}
+                        className="text-[11px] text-[#B45309] font-bold hover:underline"
+                      >
+                        Clear
+                      </button>
+                    )}
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {popularBrands.slice(0, 16).map((brand) => {
+                      const isSelected = searchQuery.toLowerCase() === brand.name.toLowerCase();
+                      return (
+                        <button
+                          key={brand.id}
+                          type="button"
+                          onClick={() => {
+                            if (isSelected) {
+                              setSearchQuery('');
+                            } else {
+                              setSearchQuery(brand.name);
+                            }
+                          }}
+                          className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                            isSelected
+                              ? 'bg-[#18181B] text-[#F5D103]'
+                              : 'bg-stone-100 text-stone-800'
+                          }`}
+                        >
+                          {brand.name}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
                 {/* Dietary Toggles */}
                 <div className="pt-4 border-t border-stone-100 space-y-3">
                   <h4 className="text-xs font-extrabold text-[#18181B] uppercase tracking-wider mb-2">
@@ -821,7 +917,7 @@ export const ShopCataloguePage: React.FC<ShopCataloguePageProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsMobileFilterOpen(false)}
-                  className="flex-[2] py-3 rounded-xl bg-[#18181B] text-[#F5D103] text-xs font-bold shadow-md hover:bg-[#E5A800] cursor-pointer text-center"
+                  className="flex-[2] py-3 rounded-xl bg-[#18181B] text-[#F5D103] text-xs font-bold shadow-md hover:bg-[#E5A800] hover:text-[#18181B] cursor-pointer text-center"
                 >
                   Show {sortedProducts.length} Results
                 </button>

@@ -14,6 +14,14 @@ export const PageTransition: React.FC<PageTransitionProps> = ({
 }) => {
   const prefersReducedMotion = usePrefersReducedMotion();
 
+  React.useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    const frame = requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, []);
+
   return (
     <motion.div
       variants={prefersReducedMotion ? reducedMotionPageVariants : pageVariants}

@@ -7,7 +7,7 @@ export const FarmFreshBanner: React.FC = () => {
 
   return (
     <section className="py-6 sm:py-8 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12">
         <div className="gsap-farm-banner relative rounded-3xl overflow-hidden bg-white border border-stone-200 p-8 sm:p-12 lg:p-14 shadow-sm">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             {/* Left Content */}

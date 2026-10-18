@@ -31,7 +31,7 @@ export const NewsletterSection: React.FC = () => {
       {/* Background botanical foliage ambiance */}
       <div className="absolute left-0 top-0 bottom-0 w-64 bg-gradient-to-r from-[#B45309]/40 to-transparent pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12 relative z-10">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12">
           {/* Left Text */}
           <div className="max-w-xl text-center lg:text-left">

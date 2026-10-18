@@ -247,11 +247,10 @@ export const HeroSection: React.FC = () => {
                 key={slide.id}
                 type="button"
                 onClick={() => goToIndex(idx)}
-                className={`transition-all duration-300 rounded-full cursor-pointer ${
-                  idx === currentSlide
+                className={`transition-all duration-300 rounded-full cursor-pointer ${idx === currentSlide
                     ? 'w-7 h-1.5 bg-[#18181B]'
                     : 'w-2 h-1.5 bg-stone-300 hover:bg-stone-400'
-                }`}
+                  }`}
                 aria-label={`Go to slide ${idx + 1}`}
               />
             ))}
@@ -336,7 +335,7 @@ export const HeroSection: React.FC = () => {
         </button>
 
         {/* Content container */}
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 w-full relative z-10 pt-8 lg:pt-14 flex-1 flex flex-col justify-between">
+        <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12 relative z-10 pt-8 lg:pt-14 flex-1 flex flex-col justify-between">
           <div className="w-full">
             <AnimatePresence mode="wait">
               <motion.div
@@ -418,11 +417,10 @@ export const HeroSection: React.FC = () => {
                     key={slide.id}
                     type="button"
                     onClick={() => goToIndex(idx)}
-                    className={`relative rounded-full transition-all duration-300 cursor-pointer overflow-hidden ${
-                      isActive
+                    className={`relative rounded-full transition-all duration-300 cursor-pointer overflow-hidden ${isActive
                         ? 'w-8 h-2 bg-[#18181B] shadow-sm'
                         : 'w-2 h-2 bg-stone-300 hover:bg-stone-500'
-                    }`}
+                      }`}
                     aria-label={`Go to slide ${idx + 1}`}
                   >
                     {/* Animated Progress Fill on Active Pill */}

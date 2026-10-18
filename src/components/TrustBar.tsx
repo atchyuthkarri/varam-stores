@@ -27,7 +27,7 @@ export const TrustBar: React.FC = () => {
 
   return (
     <section className="gsap-trust-bar py-8 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12">
         <div className="bg-white rounded-2xl border border-stone-200 p-5 sm:p-6 shadow-sm">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {trustItems.map((item) => {
